@@ -19,6 +19,7 @@ model User {
   password    String
   tickets     Ticket[]
   payments    Payments[]
+  role        String            @default("user")
 }
 
 model Admin {
@@ -26,6 +27,7 @@ model Admin {
   username    String
   password    String
   movies      Movie[] 
+  role        String
 }
 
 model Movie {
