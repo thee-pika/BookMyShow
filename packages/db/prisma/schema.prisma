@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String          @id       @default(uuid())
+  username    String
+  password    String
+  tickets     Ticket[]
+  payments    Payments[]
+}
+
+model Admin {
+  id          String          @id       @default(uuid())
+  username    String
+  password    String
+  movies      Movie[] 
+}
+
+model Movie {
+  id          String          @id       @default(uuid())
+  title       String 
+  description String
+  imageUrl    String
+  tickets     Ticket[]
+  adminId     String         
+  admin       Admin           @relation(fields:[adminId] , references:[id])
+  Payments    Payments[]
+}
+
+model Ticket {
+  id          String          @id       @default(uuid())
+  ticketType  TicketType
+  price       Int
+  movieId     String         
+  userId      String   
+  movie       Movie           @relation(fields:[movieId], references:[id])       
+  user        User            @relation(fields:[userId], references:[id])
+}
+
+model Payments {
+  id          String          @id       @default(uuid())
+  userId      String         
+  movieId     String         
+  user        User            @relation(fields:[userId], references:[id])
+  movie       Movie           @relation(fields:[movieId], references:[id])
+  paymentType PaymentState
+}
+
+enum PaymentState {
+  success
+  failed
+  pending
+}
+
+enum TicketType {
+  ordinary    
+  premiere    
+}
