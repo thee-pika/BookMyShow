@@ -27,6 +27,12 @@ export const createMovieSchema = z.object({
     adminId: z.string(),
 })
 
+export const updateMovieSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    imageUrl: z.string(),
+})
+
 export const createTicketSchema = z.object({
     ticketType: z.enum(["ordinary" , "premiere"]),
     price: z.number(),
