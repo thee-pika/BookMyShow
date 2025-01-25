@@ -27,17 +27,30 @@ export const createMovieSchema = z.object({
     adminId: z.string(),
 })
 
+
+export const createBookingSchema = z.object({
+    userId: z.string(),
+    movieId: z.string(),
+    seats: z.number(),
+    paymentId: z.string(),
+    booked: z.boolean(),
+    totalPrice: z.number()
+})
+
+
+export const createSeatSchema = z.object({
+    userId: z.string(),
+    movieId: z.string(),
+    seatNo: z.number(),
+    seatType: z.enum(["General", "Vip"]),
+    booked: z.boolean(),
+    price: z.number()
+})
+
 export const updateMovieSchema = z.object({
     title: z.string(),
     description: z.string(),
     imageUrl: z.string(),
-})
-
-export const createTicketSchema = z.object({
-    ticketType: z.enum(["ordinary" , "premiere"]),
-    price: z.number(),
-    movieId: z.string(),
-    userId: z.string()
 })
 
 export const createPaymentSchema = z.object({

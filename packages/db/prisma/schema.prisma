@@ -17,9 +17,11 @@ model User {
   id          String          @id       @default(uuid())
   username    String
   password    String
-  tickets     Ticket[]
+  bookings    Booking[]
   payments    Payments[]
   role        String            @default("user")
+  token       String?
+  seats       Seat[]
 }
 
 model Admin {
@@ -28,6 +30,7 @@ model Admin {
   password    String
   movies      Movie[] 
   role        String
+  token       String?
 }
 
 model Movie {
@@ -35,20 +38,35 @@ model Movie {
   title       String 
   description String
   imageUrl    String
-  tickets     Ticket[]
+  bokings     Booking[]
   adminId     String         
   admin       Admin           @relation(fields:[adminId] , references:[id])
   Payments    Payments[]
+  seats       Seat[]
 }
 
-model Ticket {
+model Booking {
   id          String          @id       @default(uuid())
-  ticketType  TicketType
-  price       Int
+  totalPrice  Int
   movieId     String         
   userId      String   
   movie       Movie           @relation(fields:[movieId], references:[id])       
   user        User            @relation(fields:[userId], references:[id])
+  seats       Int
+  paymentId   String
+  payment     Payments        @relation(fields:[paymentId] , references:[id])
+}
+
+model Seat {
+  id          String         @id       @default(uuid())
+  seatNo      Int
+  seatType    seatType
+  movieId     String         
+  userId      String   
+  movie       Movie           @relation(fields:[movieId], references:[id])       
+  user        User            @relation(fields:[userId], references:[id])
+  booked      Boolean         
+  price       Int
 }
 
 model Payments {
@@ -58,6 +76,7 @@ model Payments {
   user        User            @relation(fields:[userId], references:[id])
   movie       Movie           @relation(fields:[movieId], references:[id])
   paymentType PaymentState
+  bookings    Booking[]
 }
 
 enum PaymentState {
@@ -66,7 +85,7 @@ enum PaymentState {
   pending
 }
 
-enum TicketType {
-  ordinary    
-  premiere    
+enum seatType {
+  General    
+  Vip    
 }

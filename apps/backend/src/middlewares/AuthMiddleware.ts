@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+export const AuthMiddleWare = (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.cookies.access_token) {
             res.status(403).json({ message: "Not Authenticated!!" });
