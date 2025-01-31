@@ -72,7 +72,7 @@ userRouter.post("/signin", async (req, res) => {
         return
     }
 
-    const { access_token, refresh_token } = await getAccessAndRefreshToken(user.id, "user");
+    const { access_token, refresh_token } = await getAccessAndRefreshToken(user.id);
 
     const cookieOptions = {
         httpOnly: true,

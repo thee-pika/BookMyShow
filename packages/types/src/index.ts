@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { string } from "zod";
 
 export const signUpUserSchema = z.object(
     {
@@ -23,20 +23,25 @@ export const signinSchema = z.object({
 export const createMovieSchema = z.object({
     title: z.string(),
     description: z.string(),
-    imageUrl: z.string(),
-    adminId: z.string(),
+    imageUrl: z.string().url(),
+    totalSeats: z.number(),
+    banner: z.string().url(),
+    cinemahall: z.string(),
+    seatPrice: z.number(),
+    startTime: z.string()
 })
-
 
 export const createBookingSchema = z.object({
     userId: z.string(),
     movieId: z.string(),
     seats: z.number(),
     paymentId: z.string(),
-    booked: z.boolean(),
     totalPrice: z.number()
 })
 
+export const addToQueueSchema = z.object({
+    queueName: z.string(),
+})
 
 export const createSeatSchema = z.object({
     userId: z.string(),

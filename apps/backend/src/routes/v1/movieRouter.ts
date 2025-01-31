@@ -4,28 +4,50 @@ import { AuthMiddleWare } from "../../middlewares/AuthMiddleware.js";
 import { client } from "@repo/db/client";
 import { verifyJwt } from "../../controlleres/userController.js";
 import { adminMiddleWare } from "../../middlewares/admin.js";
+import { v2 as cloudinary } from "cloudinary";
+
+import dotenv from "dotenv";
+import express from "express";
+dotenv.config();
 
 export const movieRouter: Router = Router();
+movieRouter.use(express.json());
 
-movieRouter.post("/", verifyJwt, adminMiddleWare, async (req, res) => {
-    console.log("im innnnn");
-    const parsedData = await createMovieSchema.safeParse(req.body);
+movieRouter.post("/", verifyJwt, async (req, res) => {
+    try {
+        console.log("im innnnn");
+        console.log("req.body", req.body);
 
-    if (!parsedData.success) {
-        res.status(400).json({ message: "validation Failed!!" });
-        return
-    }
+        const parsedData = await createMovieSchema.safeParse(req.body);
 
-    const newMovie = await client.movie.create({
-        data: {
-            title: parsedData.data.title,
-            description: parsedData.data.description,
-            imageUrl: parsedData.data.imageUrl,
-            adminId: parsedData.data.adminId
+        if (!parsedData.success) {
+            console.log("im inn not parsed")
+
+            console.log(JSON.stringify(parsedData.error))
+            res.status(400).json({ message: "validation Failed!!" });
+            return
         }
-    })
-    console.log("new movie", newMovie);
-    res.status(200).json({ movieId: newMovie.id });
+
+        const newMovie = await client.movie.create({
+            data: {
+                title: parsedData.data.title,
+                description: parsedData.data.description,
+                imageUrl: parsedData.data.imageUrl,
+                banner: parsedData.data.banner,
+                userId: req.id,
+                totalSeats: parsedData.data.totalSeats,
+                cinemahall: parsedData.data.cinemahall,
+                startTime: parsedData.data.startTime,
+                seatPrice: parsedData.data.seatPrice
+            }
+        })
+
+        res.status(200).json({ movieId: newMovie });
+
+    } catch (error) {
+        console.log("err", error)
+        res.status(500).json({ message: "Failed to upload image", error });
+    }
 })
 
 movieRouter.get("/", async (req, res) => {
@@ -34,7 +56,7 @@ movieRouter.get("/", async (req, res) => {
     if (!movies) {
         res.json({ message: "no movies found!!" })
     }
-    console.log("movies,", movies);
+   
     res.status(200).json({
         movies
     })
@@ -48,7 +70,6 @@ movieRouter.get("/:id", async (req, res) => {
             id: movieId
         }
     })
-
     res.status(200).json({ movie });
 })
 

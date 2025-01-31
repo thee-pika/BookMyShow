@@ -3,8 +3,9 @@ import axios from "axios";
 import Link from "next/link";
 import { useState } from "react"
 import useAuthStore from "../../components/store";
-
+import { useRouter } from "next/navigation";
 const Login = () => {
+    const router = useRouter();
     const [loginData, setLoginData] = useState({
         username: "",
         password: ""
@@ -12,7 +13,6 @@ const Login = () => {
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
         const { name, value } = event.target;
-
         setLoginData({ ...loginData, [name]: value })
     }
 
@@ -22,12 +22,14 @@ const Login = () => {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/admin/signin`, {
             username: loginData.username,
             password: loginData.password
+        },{
+            withCredentials: true
         })
 
         if (res.status === 200) {
             const access_token = res.data.access_token;
-            useAuthStore.getState().setAccessToken(access_token);
-            console.log("token", useAuthStore.getState().accessToken);
+            sessionStorage.setItem("access_token", access_token);
+            router.push("/");
         }
     }
 
@@ -42,7 +44,7 @@ const Login = () => {
                                 <input
                                     type="text"
                                     className="bg-gray-50 border border-gray-100 text-gray-900 outline-none focus:ring-[#cc0a31] focus:border-[#cc0a31] block w-full ring-2 p-4 rounded-md"
-                                    name="username mb-4"
+                                    name="username"
                                     placeholder="username"
                                     value={loginData.username}
                                     onChange={handleChange}
@@ -52,7 +54,7 @@ const Login = () => {
                                     type="password"
                                     className="bg-gray-50 border border-gray-100 text-gray-900 outline-none focus:ring-[#cc0a31] focus:border-[#cc0a31] block w-full ring-2 p-4 mt-4 rounded-md"
                                     name="password"
-                                    placeholder="password"
+                                    placeholder="password is it"
                                     value={loginData.password}
                                     onChange={handleChange}
                                     required

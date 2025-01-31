@@ -14,69 +14,67 @@ datasource db {
 }
 
 model User {
-  id          String          @id       @default(uuid())
-  username    String
-  password    String
-  bookings    Booking[]
-  payments    Payments[]
-  role        String            @default("user")
-  token       String?
-  seats       Seat[]
-}
-
-model Admin {
-  id          String          @id       @default(uuid())
-  username    String
-  password    String
-  movies      Movie[] 
-  role        String
-  token       String?
+  id               String          @id       @default(uuid())
+  username         String
+  password         String
+  bookings         Booking[]
+  payments         Payments[]
+  role             String            @default("user")
+  token            String?
+  seats            Seat[]
+  movies           Movie[] 
 }
 
 model Movie {
-  id          String          @id       @default(uuid())
-  title       String 
-  description String
-  imageUrl    String
-  bokings     Booking[]
-  adminId     String         
-  admin       Admin           @relation(fields:[adminId] , references:[id])
-  Payments    Payments[]
-  seats       Seat[]
+  id               String          @id       @default(uuid())
+  title            String 
+  description      String
+  imageUrl         String
+  banner           String
+  bokings          Booking[]
+  userId           String         
+  user             User           @relation(fields:[userId] , references:[id])
+  Payments         Payments[]
+  seats            Seat[]
+  seatPrice        Int
+  totalSeats       Int        
+  cinemahall       String
+  startTime        String
 }
 
 model Booking {
-  id          String          @id       @default(uuid())
-  totalPrice  Int
-  movieId     String         
-  userId      String   
-  movie       Movie           @relation(fields:[movieId], references:[id])       
-  user        User            @relation(fields:[userId], references:[id])
-  seats       Int
-  paymentId   String
-  payment     Payments        @relation(fields:[paymentId] , references:[id])
+  id                 String          @id       @default(uuid())
+  totalPrice         Int
+  movieId            String         
+  userId             String   
+  movie              Movie           @relation(fields:[movieId], references:[id])       
+  user               User            @relation(fields:[userId], references:[id])
+  seats              Int
+  paymentId          String
+  payment            Payments        @relation(fields:[paymentId] , references:[id])
+  totalSeats         Int             @default(0)
 }
 
 model Seat {
-  id          String         @id       @default(uuid())
-  seatNo      Int
-  seatType    seatType
-  movieId     String         
-  userId      String   
-  movie       Movie           @relation(fields:[movieId], references:[id])       
-  user        User            @relation(fields:[userId], references:[id])
-  booked      Boolean         
-  price       Int
+  id                 String         @id       @default(uuid())
+  seatNo             Int
+  seatType                  seatType
+  movieId            String         
+  userId             String   
+  movie              Movie           @relation(fields:[movieId], references:[id])       
+  user               User            @relation(fields:[userId], references:[id])
+  booked             Boolean         
+  price              Int
 }
 
 model Payments {
-  id          String          @id       @default(uuid())
-  userId      String         
-  movieId     String         
-  user        User            @relation(fields:[userId], references:[id])
-  movie       Movie           @relation(fields:[movieId], references:[id])
-  paymentType PaymentState
-  bookings    Booking[]
+  id                 String          @id       @default(uuid())
+  userId             String         
+  movieId            String         
+  user               User            @relation(fields:[userId], references:[id])
+  movie              Movie           @relation(fields:[movieId], references:[id])
+  paymentType        PaymentState
+  bookings           Booking[]
 }
 
 enum PaymentState {

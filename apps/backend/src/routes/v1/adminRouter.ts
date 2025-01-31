@@ -20,7 +20,7 @@ adminRouter.post("/signup", async (req, res) => {
             return
         }
 
-        const username_Exists = await client.admin.findFirst({
+        const username_Exists = await client.user.findFirst({
             where: {
                 username: parsedData.data.username
             }
@@ -33,21 +33,22 @@ adminRouter.post("/signup", async (req, res) => {
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(parsedData.data.password, salt)
-        const user = await client.admin.create({
+        const user = await client.user.create({
             data: {
                 username: parsedData.data.username,
                 password: hashedPassword,
                 role: parsedData.data.role
             }
         })
-console.log("user id", user.id);
-        res.status(200).json({userId: user.id});
+        console.log("user id", user.id);
+        res.status(200).json({ userId: user.id });
     } catch (error) {
         res.status(500).json({ message: "Internal server error" })
     }
 })
 
 adminRouter.post("/signin", async (req, res) => {
+    console.log("im inn admin enpoint");
     const parsedData = signinSchema.safeParse(req.body);
 
     if (!parsedData.success) {
@@ -55,7 +56,7 @@ adminRouter.post("/signin", async (req, res) => {
         return
     }
 
-    const user = await client.admin.findFirst({
+    const user = await client.user.findFirst({
         where: {
             username: parsedData.data.username
         }
@@ -73,22 +74,24 @@ adminRouter.post("/signin", async (req, res) => {
         return
     }
 
-    const { access_token, refresh_token, updated_user } = await getAccessAndRefreshToken(user.id, "admin");
+    const { access_token, refresh_token, updated_user } = await getAccessAndRefreshToken(user.id);
 
     const cookieOptions = {
         httpOnly: true,
-        secure: true
-    }
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === "production" ? "none" as "none": "lax" as "lax"
+    };
 
     res.cookie("access_token", access_token, cookieOptions);
     res.cookie("refresh_token", refresh_token, cookieOptions);
 
-    res.status(200).json({ message: "Login sucessfully", user:updated_user,access_token, refresh_token });
+    res.status(200).json({ message: "Login sucessfully", user: updated_user, access_token, refresh_token });
     return
+
 })
 
 adminRouter.get("/logout", verifyJwt, async (req, res) => {
-    await client.admin.update({
+    await client.user.update({
         where: {
             id: req.id
         },

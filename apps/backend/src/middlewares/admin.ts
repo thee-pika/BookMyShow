@@ -5,9 +5,10 @@ export const adminMiddleWare = async (req: Request, res: Response, next:NextFunc
     console.log("imn nin adminnnnn");
     const userId = req.id;
 
-    const admin = await client.admin.findFirst({
+    const admin = await client.user.findFirst({
         where: {
-            id: userId
+            id: userId,
+            role: "admin"
         }
     });
    
@@ -18,3 +19,4 @@ export const adminMiddleWare = async (req: Request, res: Response, next:NextFunc
 
    next();
 }
+

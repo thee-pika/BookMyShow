@@ -1,0 +1,24 @@
+{
+  "name": "@repo/ws",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "exports": {
+    "./ws": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/ws": "^8.5.14",
+    "ws": "^8.18.0"
+  }
+}
