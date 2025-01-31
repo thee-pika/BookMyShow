@@ -2,19 +2,20 @@ import Redis, { RedisClientType } from "redis";
 import { v4 as uuidv4 } from "uuid";
 import createOrder from "../controlleres/createOrder.js";
 import { io } from "../socket/socket.js";
+import { client } from "@repo/db/client";
 const userSockets = new Map();
 
 io.on('connection', (socket) => {
   console.log(`user is connected to ${socket.id}`);
 
-  socket.on("register", (userId: string) => {
-    userSockets.set(userId, socket.id);
-    console.log(`user is connected to ${userId}, to the socket ${socket.id}`);
+  socket.on("register", (movieId: string) => {
+    userSockets.set(movieId, socket.id);
+    console.log(`user is connected to ${movieId}, to the socket ${socket.id}`);
   })
   socket.on("disconnect", () => {
-    userSockets.forEach((userId, id) => {
+    userSockets.forEach((movieId, id) => {
       if (socket.id === id) {
-        userSockets.delete(userId);
+        userSockets.delete(movieId);
       }
     })
   })
@@ -30,28 +31,18 @@ const redisClient: RedisClientType = Redis.createClient({
 
 await redisClient.connect();
 
-export const addToQueue = async (queueName: string, userId: string) => {
-  try {
+export const processQueue = async (queueName: string, seats: number[]) => {
 
-  } catch (error) {
-    console.log("Error:", error);
-  }
-}
-
-export const processQueue = async (queueName: string) => {
-  console.log("process queue", queueName);
   const userData = await redisClient.lPop(queueName);
 
   if (!userData) {
-    return
+    return { success: false }
   }
 
   const bookingData = await JSON.parse(userData);
-  const userSocket = userSockets.get(bookingData.userId);
-  console.log("booking data", bookingData);
-
-  console.log("bookingData.userId:", bookingData.userId);
-  console.log("Mapped socket id:", userSockets.get(bookingData.userId));
+  const movieId = bookingData.movieId;
+  const userId = bookingData.userId;
+  const userSocket = userSockets.get(movieId);
 
   const options = {
     amount: bookingData.amount,
@@ -61,12 +52,24 @@ export const processQueue = async (queueName: string) => {
   }
 
   const orderDetails = await createOrder({ options });
-  console.log("orderDetails", orderDetails);
-  io.to(userSocket).emit("test_event", { message: "Test message" });
 
   if (orderDetails) {
-    const { order_id,currency,amount,keyId} = orderDetails;
-    console.log(`Emitting booking_update to socketId: ${userSocket}`);
+    const { order_id, currency, amount, keyId } = orderDetails;
+
+    const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
+
+    await client.seat.createMany({
+      data: seats.map((seatNo) => ({
+        seatNo,
+        orderId: order_id,
+        userId,
+        status: "pending",
+        movieId: queueName
+      }))
+    })
+
+    redisClient.set(`session:${order_id}`, JSON.stringify(expiresAt, userId));
+
     io.to(userSocket).emit("booking_update", {
       orderId: order_id,
       currency,
@@ -77,22 +80,6 @@ export const processQueue = async (queueName: string) => {
     return { success: true }
   }
   return { error: true }
-}
-
-export const generatePaymentLink = async (movieId: string, userId: string) => {
-
-  const sessionId = uuidv4();
-
-  await redisClient.set(`session:${sessionId}`, JSON.stringify({
-    movieId: movieId,
-    userId: userId,
-    status: "pending",
-    expiresAt: Date.now() + 3 * 60 * 1000
-  })
-  )
-
-  const paymentLink = `https://razorpay.com/pay?sessionId=${sessionId}`;
-  return paymentLink;
 }
 
 export { redisClient };

@@ -24,43 +24,13 @@ export const razorpay = new Razorpay({
 
 export const paymentRouter: Router = Router();
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_ADDRESS,
-        pass: process.env.EMAIL_PASSWORD
-    }
-})
 
-paymentRouter.post("/order", async (req, res) => {
-    const options = {
-        amount: req.body.amount,
-        currency: req.body.currency,
-        receipt: req.body.receipt,
-        payment_capture: 1
-    }
-
-    try {
-        const response = await razorpay.orders.create(options);
-        res.json({
-            order_id: response.id,
-            currency: response.currency,
-            amount: response.amount,
-            keyId: process.env.RAZORPAY_KEY_ID!
-        })
-    } catch (error) {
-        console.log("error", error);
-    }
-})
-
-paymentRouter.post("/book",verifyJwt, async (req, res) => {
+paymentRouter.post("/book", verifyJwt, async (req, res) => {
     try {
         const userId = req.id;
         const movieId = req.body.queueName;
         const amount = req.body.amount;
-        console.log("reqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
-        console.log("req", req.body);
-        await redisClient.rPush(movieId, JSON.stringify({userId:movieId,amount}));
+        const seats = req.body.seats;
 
         const movie = await client.movie.findFirst({
             where: {
@@ -73,67 +43,97 @@ paymentRouter.post("/book",verifyJwt, async (req, res) => {
             return;
         }
 
-        await processQueue(movieId);
+        const unavailableSeats = await client.seat.findMany({
+            where: {
+                seatNo: { in: seats },
+                status: {
+                    not: "available"
+                }
+            }
+        })
 
-        res.status(200).json({ message: "order id created successfully"});
-    
+        console.log("unavailableSeats", unavailableSeats);
+        if (unavailableSeats.length > 0) {
+            res.status(400).json({ message: "seats are already boooked!!" });
+            return;
+        }
+
+        await redisClient.rPush(movieId, JSON.stringify({ userId, movieId, amount }));
+
+        await processQueue(movieId, seats);
+
+        res.status(200).json({ message: "order id created successfully" });
+
     } catch (error) {
+        console.log("error", error);
         res.status(500).send("Error sending payment link.");
     }
 });
 
 paymentRouter.post("/verification", async (req, res) => {
     const SECRET = "kKmvVDMqrXZ4@2B";
-    console.log("rrrrrrrrrrrrrrrrrrrr");
-    console.log("req.body", req.body);
-
+    const { order_id, payment_id, status } = req.body.payload.payment.entity;
     const data = crypto.createHmac('sha256', SECRET)
 
     data.update(JSON.stringify(req.body))
 
     const digest = data.digest('hex');
-    console.log("digest", digest);
 
     if (digest === req.headers['x-razorpay-signature']) {
+        const data = await redisClient.get(`session:${order_id}`);
+        if (data) {
+            const session = await JSON.parse(data);
 
+            if (session.expiresAt < Date.now()) {
+                await client.payments.create({
+                    data: {
+                        id: payment_id,
+                        paymentType: "failed",
+                        orderId: order_id,
+                        userId: session.userId
+                    }
+                })
+
+                await client.seat.updateMany({
+                    where: {
+                        orderId: {
+                            in: order_id
+                        }
+                    },
+                    data: {
+                        status: "available"
+                    }
+                })
+
+            } else {
+                await client.payments.create({
+                    data: {
+                        id: payment_id,
+                        paymentType: "success",
+                        orderId: order_id,
+                        userId: session.userId
+                    }
+                })
+
+                await client.seat.updateMany({
+                    where: {
+                        orderId: {
+                            in: order_id
+                        }
+                    },
+                    data: {
+                        status: "booked"
+                    }
+                })
+            }
+        }
         res.json({
             status: 'ok'
         })
-
     } else {
-
         res.status(400).send('Invalid signature');
 
     }
-
-
-
-    // const { event, payload, paymentStatus } = req.body;
-    // if (event === "payment.paid") {
-    //     const userId = payload.payment_link.reference_id;
-    //     const sessionKey = `session:${userId}`;
-    //     const sessionData = await redisClient.get(sessionKey);
-    //     if (sessionData) {
-    //         const session: Session = await JSON.parse(sessionData);
-    //         if (paymentStatus && session.expiresAt > Date.now()) {
-
-    //             session.status = "success";
-    //             await redisClient.set(sessionKey, JSON.stringify(session));
-    //             //      //    transactionId: userId
-    //             await client.payments.create({
-    //                 data: {
-    //                     userId: session.userId,
-    //                     movieId: session.movieId,
-    //                     paymentType: "success"
-    //                 }
-    //             })
-
-    //             console.log(`Payment successful for user ${userId}`);
-    //         } else {
-    //             console.log(`Payment failed or session expired for user ${userId}`);
-    //         }
-    //     }
-    // }
 })
 
 const checkExpiredSessions = async () => {
@@ -148,25 +148,3 @@ const checkExpiredSessions = async () => {
         }
     }
 }
-
-  //     const paymentLink = await generatePaymentLink(movieId, userId)
-        //     const userEmail = "mogilimounika97@gmail.com";
-
-        //     const emailOptions = {
-        //         from: process.env.EMAIL_ADDRESS,
-        //         to: userEmail,
-        //         subject: "Your payment Link for the movie",
-        //         text: `Hello, 
-  
-        //   You are next in line to book tickets for the movie! 
-        //   Please use the following link to complete your payment:
-          
-        //   ${paymentLink}
-          
-        //   The link will expire in 3 minutes. 
-  
-        //   Best regards,
-        //   Movie Ticket Booking Team`
-        //     }
-
-        //     transporter.sendMail(emailOptions);

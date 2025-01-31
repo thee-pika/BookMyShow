@@ -34,7 +34,6 @@ model Movie {
   bokings          Booking[]
   userId           String         
   user             User           @relation(fields:[userId] , references:[id])
-  Payments         Payments[]
   seats            Seat[]
   seatPrice        Int
   totalSeats       Int        
@@ -58,29 +57,34 @@ model Booking {
 model Seat {
   id                 String         @id       @default(uuid())
   seatNo             Int
-  seatType                  seatType
+  status             seatStatus
   movieId            String         
   userId             String   
   movie              Movie           @relation(fields:[movieId], references:[id])       
-  user               User            @relation(fields:[userId], references:[id])
-  booked             Boolean         
-  price              Int
+  user               User            @relation(fields:[userId], references:[id])       
+  price              Int?
+  orderId            String
 }
 
 model Payments {
   id                 String          @id       @default(uuid())
-  userId             String         
-  movieId            String         
+  userId             String               
   user               User            @relation(fields:[userId], references:[id])
-  movie              Movie           @relation(fields:[movieId], references:[id])
   paymentType        PaymentState
   bookings           Booking[]
+  orderId            String
 }
 
 enum PaymentState {
   success
   failed
   pending
+}
+
+enum seatStatus {
+  available    
+  booked
+  pending  
 }
 
 enum seatType {
