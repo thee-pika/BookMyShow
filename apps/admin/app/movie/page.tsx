@@ -16,42 +16,58 @@ interface MovieData {
     totalSeats: number,
     seatPrice: number,
     cinemahall: string,
-    startTime: Date | null
+    startTime: Date | null,
+    language: string,
+    genre: string,
+    trailerId: string,
+    year: number
 }
 
-type ValuePiece = Date | null;
-
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-
-interface Images {
-    file1: File | null,
-    file2: File | null
+interface FileType {
+    file1: File|null,
+    file2: File|null
 }
-
 const AddMovieForm = () => {
     const router = useRouter();
-    const [value, onChange] = useState<Value>(new Date());
+
+    const [selectedOption, setSelectedOption] = useState({
+        language: "",
+        genre: ""
+    });
+
     const [movieData, setMovieData] = useState<MovieData | null>({
         title: "",
         description: "",
         totalSeats: 0,
         seatPrice: 0,
         cinemahall: "",
-        startTime: null
+        startTime: null,
+        language: "Telugu",
+        genre: "Action",
+        year: 0,
+        trailerId: ""
     });
 
-    const [images, setImages] = useState<Images>({
+    const [files, setFiles] = useState<FileType|null>({
         file1: null,
         file2: null
     });
 
+    const languages = ["Telugu", "Hindi", "English", "Tamil", "Malayalam"]
+    const genres = ["Action", "Thriller", "Horror"]
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name } = e.target;
         if (e.target.files && e.target.files[0]) {
-            console.log("imag", e.target.files[0]);
-            setImages({ ...images!, [name]: e.target.files![0] })
+            setFiles({...files!, [name]: e.target.files[0]})
         }
 
+    }
+
+    const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setSelectedOption({ ...selectedOption, [name]: value });
+        setMovieData({ ...movieData!, [e.target.name]: e.target.value })
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -59,20 +75,21 @@ const AddMovieForm = () => {
         const token = sessionStorage.getItem("access_token");
         console.log("token", token);
 
-        const image = await UploadToCloudianary(images.file1!);
-        const image2 = await UploadToCloudianary(images.file2!);
-
-        console.log("fropm",image)
-        console.log("from",image2)
+        const image = await UploadToCloudianary(files!.file1!);
+        const image2 = await UploadToCloudianary(files!.file2!);
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie`, {
             title: movieData!.title,
             description: movieData!.description,
             totalSeats: movieData!.totalSeats,
-            banner: image2,
             imageUrl: image,
             seatPrice: movieData?.seatPrice,
             startTime: (movieData!.startTime),
-            cinemahall: movieData?.cinemahall
+            cinemahall: movieData?.cinemahall,
+            language: movieData?.language,
+            banner: image2,
+            genre: movieData?.genre,
+            year: movieData?.year,
+            trailerId: movieData?.trailerId
         },
             {
                 headers: {
@@ -81,9 +98,8 @@ const AddMovieForm = () => {
                 }
             }
         )
-
         console.log("res", res)
-        if (res.statusText === "ok") {
+        if (res.status === 200) {
             router.push("/");
         }
     };
@@ -127,7 +143,7 @@ const AddMovieForm = () => {
                 </div>
 
                 <div className="mb-4">
-                    <label className="block font-medium mb-1">Banner Image</label>
+                    <label className="block font-medium mb-1">Banner</label>
                     <input
                         type="file"
                         name="file2"
@@ -140,7 +156,7 @@ const AddMovieForm = () => {
                 <div className="mb-4">
                     <label className="block font-medium mb-1">Total Seats</label>
                     <input
-                    
+
                         type="number"
                         onChange={(e) => setMovieData({ ...movieData!, totalSeats: parseInt(e.target.value) })}
                         className="w-full p-2 border border-gray-300 rounded"
@@ -170,6 +186,72 @@ const AddMovieForm = () => {
                         value={movieData?.cinemahall}
                     />
                 </div>
+                <div className="flex justify-between">
+                    <div className="mb-4">
+                        <label className="block font-medium mb-1">Genre</label>
+                        <select
+                            id="movie-dropdown"
+                            value={selectedOption.genre}
+                            onChange={handleSelect}
+                            className="dropdown p-2 px-4 border border-gray-300 rounded"
+                            name="genre"
+                        >
+                            <option value="" disabled>
+                                choose the genre
+                            </option>
+                            {
+                                genres.map((genre) => (
+                                    <option value={genre} key={genre}>{genre}</option>
+                                ))
+                            }
+                        </select>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block font-medium mb-1">Language</label>
+                        <select
+                            id="movie-dropdown"
+                            value={selectedOption.language}
+                            onChange={handleSelect}
+                            className="dropdown p-2 px-4 border border-gray-300 rounded"
+                            name="language"
+                        >
+                            <option value="" disabled>
+                                choose the language
+                            </option>
+                            {
+                                languages.map((lang) => (
+                                    <option value={lang} key={lang}>{lang}</option>
+                                ))
+                            }
+
+                        </select>
+
+                    </div>
+                    <div className="mb-4">
+                        <label className="block font-medium mb-1">year</label>
+                        <input
+                            name="cinemahall"
+                            type="number"
+                            onChange={(e) =>
+                                setMovieData({ ...movieData!, year: parseInt(e.target.value) })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                            value={movieData?.year}
+                        />
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <label className="block font-medium mb-1">TrailerId</label>
+                    <input
+                        name="trailerId"
+                        type="text"
+                        onChange={(e) =>
+                            setMovieData({ ...movieData!, trailerId: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={movieData?.trailerId}
+                    />
+                </div>
 
                 <div className="mb-4">
                     <h1>Start Time</h1>
@@ -178,10 +260,8 @@ const AddMovieForm = () => {
                         onChange={(date) => {
                             console.log("data", date);
                             setMovieData({ ...movieData!, startTime: date })
-
                         }} />
                 </div>
-
                 <button
                     type="submit"
                     className="w-full px-4 py-2 bg-[#cc0a31] text-white rounded hover:bg-[#cc0a0a67]"

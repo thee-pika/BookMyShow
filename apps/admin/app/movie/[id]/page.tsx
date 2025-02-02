@@ -8,85 +8,101 @@ import { useEffect, useState } from "react";
 dotenv.config();
 
 interface MovieData {
-  id: string,
-  title: string,
-  description: string,
-  totalSeats: number,
-  seatPrice: number,
-  cinemahall: string,
-  startTime: Date | null,
-  imageUrl: string,
-  banner: string
+  id: string;
+  title: string;
+  description: string;
+  totalSeats: number;
+  seatPrice: number;
+  cinemahall: string;
+  startTime: Date | null;
+  imageUrl: string;
+  language: string;
+  genre: string;
+  year: string;
+  banner: string;
+  trailerId: string;
 }
 
 const GetMovieByItsId = () => {
-  const [movie, setMovie] = useState<MovieData | null>(null)
+  const [movie, setMovie] = useState<MovieData | null>(null);
   const { id } = useParams();
 
   useEffect(() => {
-    getMovie()
-  }, [])
+    getMovie();
+  }, []);
 
   const getMovie = async () => {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`);
-    if (res.statusText === 'OK') {
-      setMovie(res.data.movie)
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
+    );
+    if (res.statusText === "OK") {
+      setMovie(res.data.movie);
     }
-  }
-
+  };
 
   return (
-    <>
-      <div className="movie">
-        <div>
-          {movie ? (
-            <>
-              <div>
-                <div className="image w-full h-[70vh] relative">
-                  <Image
-                    src={movie.banner}
-                    alt={movie.title}
+    <div className="movie bg-black text-white min-h-screen relative">
+      {movie ? (
+        <>
+          {/* Background Banner */}
+          <div className="absolute inset-0">
+            <Image
+              src={movie.banner}
+              alt={`${movie.title} Banner`}
+              layout="fill"
+              objectFit="cover"
+              className="opacity-40"
+            />
+          </div>
+          {/* Main Content */}
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-8 p-8">
+            {/* Left: Poster */}
+            <div className="w-full md:w-[30%] flex flex-col lg:w-[25%] h-[50vh] overflow-hidden rounded-xl shadow-lg">
+              <Image
+                src={movie.imageUrl}
+                alt={`${movie.title} Poster`}
+                width={250}
+                height={350}
+                objectFit="cover"
+              />
 
-                    layout="fill"
-                    objectFit="cover"
-                    className="absolute top-0 left-0 opacity-80"
-                  />
-                  <div className="flex justify-evenly relative">
-                    <div className="absolute top-0 left-0 w-[23vw] h-[70vh] z-10 overflow-hidden rounded-xl ">
-                      <Image
-                        src={movie.imageUrl}
-                        alt={movie.title}
-                        layout="fill"
-                        objectFit="cover"
-                        className="p-8"
-                      />
-                    </div>
-                    <div className="book-ticket px-4 py-2 z-50 bg-[#88001b] text-white rounded hover:bg-[#cc0a0a] absolute mt-80 mr-30 p-8" >
-                      <Link href={`/movie/${movie.id}/seats`}>
-                        Book Tickets
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                <div className="m-4 ml-20 description">
-                  <h1 className=" text-2xl font-bold m-4">
-                    About the Movie
-                  </h1>
-                  <p > {movie.description} </p>
+            </div>
 
-                </div>
+            <div className="w-full flex flex-col mt-24 md:w-[65%] lg:w-[70%] space-y-6">
+              <h1 className="text-4xl font-bold">{movie.title}</h1>
+              <p className="text-blue-500 font-bold text-lg">BlockBuster</p>
+              <div className="flex font-bold">
+                <p className="text-lg ">
+                {movie.language}
+                </p>
+                <p className="text-gray-400 ml-2 mr-2">|</p>
+                <p className="text-lg">
+              {movie.year}
+                </p>
+                <p className="text-gray-400 ml-2 mr-2">|</p>
+                <p className="text-lg">
+             {movie.genre}
+              </p>
               </div>
-
-            </>
-          ) : (
-            "No movie found"
-          )}
-
+           
+              <p className="text-base text-gray-300 w-[30vw]">{movie.description}</p>
+              <div>
+                <Link href={`/movie/${movie.id}/seats`}>
+                  <button className="px-20 mt-20 py-3 bg-[#F84464] hover:bg-[#cc0a0a] text-white font-semibold rounded-lg">
+                    Book Tickets
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex items-center justify-center h-screen">
+          <p>No movie found</p>
         </div>
-
-      </div>
-    </>
-  )
-}
+      )}
+    </div>
+  );
+};
 
 export default GetMovieByItsId;

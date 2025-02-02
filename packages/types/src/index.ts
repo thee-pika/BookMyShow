@@ -25,10 +25,14 @@ export const createMovieSchema = z.object({
     description: z.string(),
     imageUrl: z.string().url(),
     totalSeats: z.number(),
-    banner: z.string().url(),
     cinemahall: z.string(),
     seatPrice: z.number(),
-    startTime: z.string()
+    startTime: z.string(),
+    banner: z.string(),
+    year: z.number(),
+    genre: z.enum(["Action", "Thriller", "Horror"]),
+    language: z.enum(["Telugu","Hindi","English" ,"Tamil", "Malayalam"]),
+    trailerId: z.string()
 })
 
 export const createBookingSchema = z.object({
@@ -61,5 +65,5 @@ export const updateMovieSchema = z.object({
 export const createPaymentSchema = z.object({
     movieId: z.string(),
     userId: z.string(),
-    paymentType: z.enum([ "success","failed","pending"])
+    paymentType: z.enum(["success", "failed", "pending"])
 })

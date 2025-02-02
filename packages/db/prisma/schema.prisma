@@ -30,7 +30,6 @@ model Movie {
   title            String 
   description      String
   imageUrl         String
-  banner           String
   bokings          Booking[]
   userId           String         
   user             User           @relation(fields:[userId] , references:[id])
@@ -39,6 +38,11 @@ model Movie {
   totalSeats       Int        
   cinemahall       String
   startTime        String
+  banner           String
+  year             Int
+  genre            GenreType
+  language         LanguageType
+  trailerId        String?
 }
 
 model Booking {
@@ -75,10 +79,24 @@ model Payments {
   orderId            String
 }
 
+enum LanguageType {
+  Telugu
+  Hindi
+  English
+  Tamil
+  Malayalam
+}
+
 enum PaymentState {
   success
   failed
   pending
+}
+
+enum GenreType {
+  Action
+  Thriller
+  Horror
 }
 
 enum seatStatus {

@@ -4,7 +4,7 @@ import { AuthMiddleWare } from "../../middlewares/AuthMiddleware.js";
 import { client } from "@repo/db/client";
 import { verifyJwt } from "../../controlleres/userController.js";
 import { adminMiddleWare } from "../../middlewares/admin.js";
-import { v2 as cloudinary } from "cloudinary";
+
 
 import dotenv from "dotenv";
 import express from "express";
@@ -15,14 +15,10 @@ movieRouter.use(express.json());
 
 movieRouter.post("/", verifyJwt, async (req, res) => {
     try {
-        console.log("im innnnn");
-        console.log("req.body", req.body);
 
         const parsedData = await createMovieSchema.safeParse(req.body);
 
         if (!parsedData.success) {
-            console.log("im inn not parsed")
-
             console.log(JSON.stringify(parsedData.error))
             res.status(400).json({ message: "validation Failed!!" });
             return
@@ -33,12 +29,16 @@ movieRouter.post("/", verifyJwt, async (req, res) => {
                 title: parsedData.data.title,
                 description: parsedData.data.description,
                 imageUrl: parsedData.data.imageUrl,
-                banner: parsedData.data.banner,
                 userId: req.id,
                 totalSeats: parsedData.data.totalSeats,
                 cinemahall: parsedData.data.cinemahall,
                 startTime: parsedData.data.startTime,
-                seatPrice: parsedData.data.seatPrice
+                seatPrice: parsedData.data.seatPrice,
+                banner: parsedData.data.banner,
+                year: parsedData.data.year,
+                genre: parsedData.data.genre,
+                language: parsedData.data.language,
+                trailerId: parsedData.data.trailerId
             }
         })
 
@@ -51,7 +51,18 @@ movieRouter.post("/", verifyJwt, async (req, res) => {
 })
 
 movieRouter.get("/", async (req, res) => {
-    const movies = await client.movie.findMany();
+    const pageNo = req.query.page as string;
+    const limitNo = req.query.limit as string;
+
+    const limit = parseInt(limitNo!) || 6;
+    const page = parseInt(pageNo) || 1; 
+
+    const skip = (page - 1) * limit;
+
+    const movies = await client.movie.findMany({
+        skip,
+        take:limit
+    })
 
     if (!movies) {
         res.json({ message: "no movies found!!" })

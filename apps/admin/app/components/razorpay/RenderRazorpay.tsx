@@ -41,7 +41,7 @@ const displayRazorpay = async (options: any) => {
 const RenderRazorpay = ({ orderDetails }: { orderDetails: RenderRazorpayProps }) => {
 
     useEffect(() => {
-        console.log("order details", orderDetails);
+       
         const options = {
             key: orderDetails.keyId,
             amount: orderDetails.amount,
