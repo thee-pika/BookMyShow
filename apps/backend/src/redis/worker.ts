@@ -43,7 +43,8 @@ export const processQueue = async (queueName: string, seats: number[]) => {
   const movieId = bookingData.movieId;
   const userId = bookingData.userId;
   const userSocket = userSockets.get(movieId);
-
+  console.log("booking", bookingData);
+  
   const options = {
     amount: bookingData.amount,
     currency: "INR",
@@ -68,7 +69,7 @@ export const processQueue = async (queueName: string, seats: number[]) => {
       }))
     })
 
-    redisClient.set(`session:${order_id}`, JSON.stringify(expiresAt, userId));
+    redisClient.set(`session:${order_id}`, JSON.stringify({expiresAt, userId}));
 
     io.to(userSocket).emit("booking_update", {
       orderId: order_id,

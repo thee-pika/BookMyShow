@@ -39,9 +39,8 @@ const displayRazorpay = async (options: any) => {
 }
 
 const RenderRazorpay = ({ orderDetails }: { orderDetails: RenderRazorpayProps }) => {
-
     useEffect(() => {
-       
+       console.log("ordr detailssssssssssssssssssssss", orderDetails);
         const options = {
             key: orderDetails.keyId,
             amount: orderDetails.amount,
@@ -49,11 +48,7 @@ const RenderRazorpay = ({ orderDetails }: { orderDetails: RenderRazorpayProps })
             name: 'amit',
             order_id: orderDetails.orderId,
 
-            handler: (response: any) => {
-                console.log(response);
-                alert("payment made");
-                alert("payment made");
-            },
+            handler: (response: any) => {},
             prefill: {
                 "name": "Gaurav Kumar",
             }

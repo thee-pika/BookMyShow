@@ -65,7 +65,6 @@ const GetMovieByItsId = () => {
                 height={350}
                 objectFit="cover"
               />
-
             </div>
 
             <div className="w-full flex flex-col mt-24 md:w-[65%] lg:w-[70%] space-y-6">

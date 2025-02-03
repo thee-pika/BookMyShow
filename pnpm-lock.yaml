@@ -108,6 +108,9 @@ importers:
       '@types/multer':
         specifier: ^1.4.12
         version: 1.4.12
+      '@types/node-cron':
+        specifier: ^3.0.11
+        version: 3.0.11
       '@types/nodemailer':
         specifier: ^6.4.17
         version: 6.4.17
@@ -141,6 +144,9 @@ importers:
       multer:
         specifier: 1.4.5-lts.1
         version: 1.4.5-lts.1
+      node-cron:
+        specifier: ^3.0.3
+        version: 3.0.3
       nodemailer:
         specifier: ^6.10.0
         version: 6.10.0
@@ -1087,6 +1093,9 @@ packages:
 
   '@types/multer@1.4.12':
     resolution: {integrity: sha512-pQ2hoqvXiJt2FP9WQVLPRO+AmiIm/ZYkavPlIQnx282u4ZrVdztx0pkh3jjpQt0Kz+YI0YhSG264y08UJKoUQg==}
+
+  '@types/node-cron@3.0.11':
+    resolution: {integrity: sha512-0ikrnug3/IyneSHqCBeslAhlK2aBfYek1fGo4bP4QnZPmiqSGRK+Oy7ZMisLWkesffJvQ1cqAcBnJC+8+nxIAg==}
 
   '@types/node@20.17.6':
     resolution: {integrity: sha512-VEI7OdvK2wP7XHnsuXbAJnEpEkF6NjSN45QJlL4VGqZSXsnicpesdTWsg9RISeSdYd3yeRj/y3k5KGjUXYnFwQ==}
@@ -2606,6 +2615,10 @@ packages:
   no-case@2.3.2:
     resolution: {integrity: sha512-rmTZ9kz+f3rCvK2TD1Ue/oZlns7OGoIWP4fc3llxxRXlOkHKoWPPWJOfFYpITabSow43QJbRIoHQXtt10VldyQ==}
 
+  node-cron@3.0.3:
+    resolution: {integrity: sha512-dOal67//nohNgYWb+nWmg5dkFdIwDm8EpeGYMekPMrngV3637lqnX0lbUcCtgibHTz6SEz7DAIjKvKDFYCnO1A==}
+    engines: {node: '>=6.0.0'}
+
   node-plop@0.26.3:
     resolution: {integrity: sha512-Cov028YhBZ5aB7MdMWJEmwyBig43aGL5WT4vdoB28Oitau1zZAcHUn8Sgfk9HM33TqhtLJ9PlM/O0Mv+QpV/4Q==}
     engines: {node: '>=8.9.4'}
@@ -3400,6 +3413,10 @@ packages:
     resolution: {integrity: sha512-508e6IcKLrhxKdBbcA2b4KQZlLVp2+J5UwQ6F7Drckkc5N9ZJwFa4TgWtsww9UG8fGHbm6gbV19TdM5pQ4GaIA==}
     hasBin: true
 
+  uuid@8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
+
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -4191,6 +4208,8 @@ snapshots:
   '@types/multer@1.4.12':
     dependencies:
       '@types/express': 5.0.0
+
+  '@types/node-cron@3.0.11': {}
 
   '@types/node@20.17.6':
     dependencies:
@@ -5953,6 +5972,10 @@ snapshots:
     dependencies:
       lower-case: 1.1.4
 
+  node-cron@3.0.3:
+    dependencies:
+      uuid: 8.3.2
+
   node-plop@0.26.3:
     dependencies:
       '@babel/runtime-corejs3': 7.26.0
@@ -6896,6 +6919,8 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid@11.0.5: {}
+
+  uuid@8.3.2: {}
 
   v8-compile-cache-lib@3.0.1: {}
 

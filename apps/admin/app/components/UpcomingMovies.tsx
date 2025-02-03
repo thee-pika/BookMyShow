@@ -14,19 +14,30 @@ interface Movie {
 
 const UpcomingMovies = () => {
     const [upcomingMovies, setupcomingMovies] = useState<Movie[]>();
+    const [currentPage, setcurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
         getUpcomingMovies();
-    }, [])
+    }, [currentPage])
 
     const getUpcomingMovies = async () => {
         const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?page=${currentPage}&limit=8`
         );
 
         setupcomingMovies(res.data.movies);
+        setTotalPages(res.data.totalPages);
 
     }
+
+    const goToNextPage = () => {
+        if (currentPage < totalPages) setcurrentPage((prev) => prev+1);
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPage > 1) setcurrentPage((prev) => prev-1);
+    };
 
     return (
         <div className="w-[83vw] mx-auto bg-white rounded-xl">
@@ -54,6 +65,23 @@ const UpcomingMovies = () => {
                 ) : (
                     <p>No movies available.....</p>
                 )}
+            </div>
+            <div className="pagination-controls">
+                <button
+                    onClick={goToPreviousPage}
+                    disabled={currentPage === 1}
+                    className="border border-e-gray-400 px-4 rounded-md"
+                >
+                    Previous
+                </button>
+                <span className="border border-e-gray-400 px-4 rounded-md" >Page {currentPage} of {totalPages}</span>
+                <button
+                    onClick={goToNextPage}
+                    disabled={currentPage === totalPages}
+                    className="border border-e-gray-400 px-4 rounded-md"
+                >
+                    Next
+                </button>
             </div>
         </div>
     )

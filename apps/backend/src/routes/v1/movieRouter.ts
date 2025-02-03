@@ -53,26 +53,61 @@ movieRouter.post("/", verifyJwt, async (req, res) => {
 movieRouter.get("/", async (req, res) => {
     const pageNo = req.query.page as string;
     const limitNo = req.query.limit as string;
+    const page = parseInt(pageNo) || 1;
 
-    const limit = parseInt(limitNo!) || 6;
-    const page = parseInt(pageNo) || 1; 
-
+    const totalMovies = await client.movie.count();
+    const limit = parseInt(limitNo!) || 1;
+    const totalPages = Math.ceil(totalMovies / limit);
     const skip = (page - 1) * limit;
 
     const movies = await client.movie.findMany({
         skip,
-        take:limit
+        take: limit
     })
 
     if (!movies) {
         res.json({ message: "no movies found!!" })
     }
-   
+
     res.status(200).json({
-        movies
+        movies,
+        totalPages
     })
 })
 
+movieRouter.get("/:id/seats", async (req, res) => {
+    const movieId = req.params.id;
+
+    const seats = await client.seat.findMany({
+        where: {
+            movieId,
+            status: "booked"
+        }
+    })
+
+    const pendingSeats = await client.seat.findMany({
+        where: {
+            movieId,
+            status: "pending"
+        }
+    })
+    
+    const pendingSeatNo = pendingSeats.map((seat) => seat.seatNo)
+    const seatNos = seats.map((seat) => seat.seatNo )
+    
+    if (seats === null) {
+        res.status(200).json({
+            seats: [],
+            pendingSeats:[]
+        })
+        return;
+    }
+
+    res.status(200).json({
+        seats:seatNos,
+        pendingSeats:pendingSeatNo
+    })
+})
 movieRouter.get("/:id", async (req, res) => {
     const movieId = req.params.id;
 

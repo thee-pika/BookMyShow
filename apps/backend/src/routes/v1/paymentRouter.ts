@@ -46,13 +46,13 @@ paymentRouter.post("/book", verifyJwt, async (req, res) => {
         const unavailableSeats = await client.seat.findMany({
             where: {
                 seatNo: { in: seats },
+                movieId,
                 status: {
                     not: "available"
                 }
             }
         })
 
-        console.log("unavailableSeats", unavailableSeats);
         if (unavailableSeats.length > 0) {
             res.status(400).json({ message: "seats are already boooked!!" });
             return;
@@ -71,8 +71,10 @@ paymentRouter.post("/book", verifyJwt, async (req, res) => {
 });
 
 paymentRouter.post("/verification", async (req, res) => {
+
     const SECRET = "kKmvVDMqrXZ4@2B";
-    const { order_id, payment_id, status } = req.body.payload.payment.entity;
+
+    const { order_id, id, status } = req.body.payload.payment.entity;
     const data = crypto.createHmac('sha256', SECRET)
 
     data.update(JSON.stringify(req.body))
@@ -80,14 +82,16 @@ paymentRouter.post("/verification", async (req, res) => {
     const digest = data.digest('hex');
 
     if (digest === req.headers['x-razorpay-signature']) {
+
         const data = await redisClient.get(`session:${order_id}`);
         if (data) {
             const session = await JSON.parse(data);
-
+            console.log("session", session);
             if (session.expiresAt < Date.now()) {
+
                 await client.payments.create({
                     data: {
-                        id: payment_id,
+                        id: id,
                         paymentType: "failed",
                         orderId: order_id,
                         userId: session.userId
@@ -96,9 +100,7 @@ paymentRouter.post("/verification", async (req, res) => {
 
                 await client.seat.updateMany({
                     where: {
-                        orderId: {
-                            in: order_id
-                        }
+                        orderId: order_id
                     },
                     data: {
                         status: "available"
@@ -108,7 +110,7 @@ paymentRouter.post("/verification", async (req, res) => {
             } else {
                 await client.payments.create({
                     data: {
-                        id: payment_id,
+                        id: id,
                         paymentType: "success",
                         orderId: order_id,
                         userId: session.userId
@@ -117,9 +119,7 @@ paymentRouter.post("/verification", async (req, res) => {
 
                 await client.seat.updateMany({
                     where: {
-                        orderId: {
-                            in: order_id
-                        }
+                        orderId: order_id
                     },
                     data: {
                         status: "booked"

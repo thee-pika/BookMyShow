@@ -6,7 +6,7 @@ import { adminRouter } from "./routes/v1/adminRouter.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { paymentRouter } from "./routes/v1/paymentRouter.js";
-
+import "./jobs/paymentCleanupJob.js";
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());

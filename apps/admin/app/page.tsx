@@ -34,8 +34,7 @@ export default function Home() {
   const [movies, setMovies] = useState<Movie[] | null>(null);
   const [searchItem, setSearchItem] = useState("");
   const [fileteredMovies, setfileteredMovies] = useState<Movie[] | null>(null);
-  const [currentPage, setcurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0);
+
 
   const [selectedItems, setselectedItems] = useState({
     language: "All",
@@ -51,31 +50,28 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const filteredMovies = movies?.filter((movie) => {
-      const selectedLang = selectedItems.language === "All" || movie.language === selectedItems.language;
-      const selectGenre = selectedItems.genre === movie.genre;
-
-      const searchedItem = movie.title.toLowerCase().includes(searchItem.toLowerCase());
+    const filteredFilms = movies?.filter((movie) => {
+      const selectedLang =
+        selectedItems.language === "All" ||
+        movie.language.toLowerCase() === selectedItems.language.toLowerCase();
+      const selectGenre =
+        movie.genre.toLowerCase() === selectedItems.genre.toLowerCase();
+      const searchedItem = movie.title
+        .toLowerCase()
+        .includes(searchItem.toLowerCase());
       return selectedLang && selectGenre && searchedItem;
-    })
-
-    setfileteredMovies(filteredMovies!);
+    });
+    console.log("movies", movies);
+    console.log("filetered", filteredFilms);
+    setfileteredMovies(filteredFilms!);
+    console.log("filtered movies", filteredFilms);
   }, [movies, searchItem, selectedItems.genre, selectedItems.language])
 
   const getMovies = async () => {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?page=${currentPage}&limit=6`
-    );
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?page=1&limit=8`
+  );
     setMovies(res.data.movies);
-    setTotalPages(movies!.length)
-  };
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) setcurrentPage(currentPage + 1);
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) setcurrentPage(currentPage - 1);
   };
 
   return (
@@ -138,26 +134,10 @@ export default function Home() {
                     </div>
                   </div>
                 ))
-
               ) : (
                 <p>No movies available.....</p>
               )}
-              <div className="pagination-controls">
-                <button
-                  onClick={goToPreviousPage}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-                <span>Page {currentPage} of {totalPages}</span>
-                <button
-                  onClick={goToNextPage}
-                  disabled={currentPage === totalPages}
-                  className="bg-black"
-                >
-                  Next
-                </button>
-              </div>
+
             </div>
           </div>
         </div>
@@ -188,7 +168,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </>

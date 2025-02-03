@@ -9,8 +9,9 @@ interface Options {
 }
 
 const createOrder = async ({ options }: { options: Options }) => {
+    console.log("options", options.amount)
     const optionsRzpy = {
-        amount: options.amount,
+        amount: options.amount*100,
         currency: options.currency,
         receipt: options.receipt,
         payment_capture: options.payment_capture
