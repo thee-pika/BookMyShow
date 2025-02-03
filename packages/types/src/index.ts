@@ -59,7 +59,16 @@ export const createSeatSchema = z.object({
 export const updateMovieSchema = z.object({
     title: z.string(),
     description: z.string(),
-    imageUrl: z.string(),
+    imageUrl: z.string().url(),
+    totalSeats: z.number(),
+    cinemahall: z.string(),
+    seatPrice: z.number(),
+    startTime: z.string(),
+    banner: z.string(),
+    year: z.number(),
+    genre: z.enum(["Action", "Thriller", "Horror"]),
+    language: z.enum(["Telugu","Hindi","English" ,"Tamil", "Malayalam"]),
+    trailerId: z.string()
 })
 
 export const createPaymentSchema = z.object({

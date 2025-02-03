@@ -123,9 +123,10 @@ movieRouter.put("/:id", verifyJwt, adminMiddleWare, async (req, res) => {
     console.log("im editing a movie put request");
     const movieId = req.params.id;
 
-    const parsedData = updateMovieSchema.safeParse(req.body);
+    const parsedData = updateMovieSchema.safeParse(req.body.movieData);
 
     if (!parsedData.success) {
+        console.log("error", parsedData.error)
         res.status(400).json({ message: "validation Failed!!" });
         return
     }
@@ -148,7 +149,17 @@ movieRouter.put("/:id", verifyJwt, adminMiddleWare, async (req, res) => {
         data: {
             title: parsedData.data.title,
             description: parsedData.data.description,
-            imageUrl: parsedData.data.imageUrl
+            imageUrl: parsedData.data.imageUrl,
+            userId: req.id,
+            totalSeats: parsedData.data.totalSeats,
+            cinemahall: parsedData.data.cinemahall,
+            startTime: parsedData.data.startTime,
+            seatPrice: parsedData.data.seatPrice,
+            banner: parsedData.data.banner,
+            year: parsedData.data.year,
+            genre: parsedData.data.genre,
+            language: parsedData.data.language,
+            trailerId: parsedData.data.trailerId
         }
     })
 
