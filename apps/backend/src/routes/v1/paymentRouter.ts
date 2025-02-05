@@ -74,10 +74,10 @@ paymentRouter.post("/verification", async (req, res) => {
 
     const SECRET = "kKmvVDMqrXZ4@2B";
 
-    const { order_id, id, status } = req.body.payload.payment.entity;
-    const data = crypto.createHmac('sha256', SECRET)
+    const { order_id, id, amount } = req.body.payload.payment.entity;
+    const data = crypto.createHmac('sha256', SECRET);
 
-    data.update(JSON.stringify(req.body))
+    data.update(JSON.stringify(req.body));
 
     const digest = data.digest('hex');
 
@@ -86,7 +86,7 @@ paymentRouter.post("/verification", async (req, res) => {
         const data = await redisClient.get(`session:${order_id}`);
         if (data) {
             const session = await JSON.parse(data);
-            console.log("session", session);
+
             if (session.expiresAt < Date.now()) {
 
                 await client.payments.create({
@@ -108,6 +108,7 @@ paymentRouter.post("/verification", async (req, res) => {
                 })
 
             } else {
+
                 await client.payments.create({
                     data: {
                         id: id,
@@ -125,26 +126,57 @@ paymentRouter.post("/verification", async (req, res) => {
                         status: "booked"
                     }
                 })
+
+                const seats = await client.seat.findMany({
+                    where: {
+                        orderId: order_id
+                    }
+                })
+
+                const movie = await client.movie.findFirst({
+                    where: {
+                        id: seats[0]!.movieId
+                    }
+                })
+
+                if(!movie) {
+                     res.status(400).json({message: "movie not found"});
+                     return
+                }
+                const booking = await client.booking.create({
+                    data: {
+                        paymentId: id,
+                        userId: session.userId,
+                        totalPrice: amount,
+                        movieId: movie.id,
+                        totalSeats: seats.length,
+                        imageUrl: movie.imageUrl
+                    }
+                })
+
+                console.log("booking,", booking);
             }
         }
+
         res.json({
             status: 'ok'
         })
+
     } else {
         res.status(400).send('Invalid signature');
 
     }
 })
 
-const checkExpiredSessions = async () => {
-    const sessionKeys = await redisClient.keys("session:*");
-    for (const key in sessionKeys) {
-        const sessionData = await redisClient.get(key);
-        if (sessionData) {
-            const session: Session = JSON.parse(sessionData);
-            if (session.expiresAt < Date.now() && session.status === "pending") {
-                await redisClient.del(key);
-            }
+paymentRouter.get("/ticket", verifyJwt, async (req, res) => {
+    const id = req.params.id;
+
+    const bookings = await client.booking.findMany({
+        where: {
+            userId: req.id
         }
-    }
-}
+    })
+
+    res.status(200).json({ bookings });
+})
+

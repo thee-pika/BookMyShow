@@ -48,11 +48,11 @@ model Movie {
 model Booking {
   id                 String          @id       @default(uuid())
   totalPrice         Int
+  imageUrl           String
   movieId            String         
   userId             String   
   movie              Movie           @relation(fields:[movieId], references:[id])       
   user               User            @relation(fields:[userId], references:[id])
-  seats              Int
   paymentId          String
   payment            Payments        @relation(fields:[paymentId] , references:[id])
   totalSeats         Int             @default(0)

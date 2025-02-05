@@ -41,6 +41,16 @@ const Navbar = () => {
                 </Link>
 
                 <div className="nav-items flex justify center items-center">
+                    <Link href={"/booking"}>
+                        <div className="item1 hover:underline m-4 flex">
+                            <Image
+                                src={"/assets/movie-svgrepo-com.svg"}
+                                width={20}
+                                height={20}
+                                alt={""} />
+                            <span className="pl-2"> Your Tickets</span>
+                        </div>
+                    </Link>
                     <Link href={"/movie"}>
                         <div className="item1 hover:underline m-4">New Movie</div>
                     </Link>

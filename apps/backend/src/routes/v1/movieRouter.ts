@@ -91,21 +91,21 @@ movieRouter.get("/:id/seats", async (req, res) => {
             status: "pending"
         }
     })
-    
+
     const pendingSeatNo = pendingSeats.map((seat) => seat.seatNo)
-    const seatNos = seats.map((seat) => seat.seatNo )
-    
+    const seatNos = seats.map((seat) => seat.seatNo)
+
     if (seats === null) {
         res.status(200).json({
             seats: [],
-            pendingSeats:[]
+            pendingSeats: []
         })
         return;
     }
 
     res.status(200).json({
-        seats:seatNos,
-        pendingSeats:pendingSeatNo
+        seats: seatNos,
+        pendingSeats: pendingSeatNo
     })
 })
 movieRouter.get("/:id", async (req, res) => {
@@ -117,6 +117,34 @@ movieRouter.get("/:id", async (req, res) => {
         }
     })
     res.status(200).json({ movie });
+})
+
+movieRouter.get("/:id/similar", async (req, res) => {
+    console.log("im innn getting movies section ........");
+    const movieId = req.params.id;
+
+    const movie = await client.movie.findFirst({
+        where: {id: movieId}
+    })
+    
+    if (!movie) {
+        console.log("are we here...");
+        res.status(400).json({ message: "no movies found!!" });
+        return;
+    }
+
+    const similarMovies = await client.movie.findMany({
+        where: {
+            id: {not: movieId},
+            OR: [
+                {genre: movie.genre},
+                {language: movie.language},
+                {year: movie.year}
+            ]
+        }
+    });
+
+    res.status(200).json({ similarMovies });
 })
 
 movieRouter.put("/:id", verifyJwt, adminMiddleWare, async (req, res) => {

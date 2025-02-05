@@ -1,12 +1,11 @@
+import axios from "axios";
 import { useEffect } from "react";
 
 interface RenderRazorpayProps {
-
     orderId: string;
     currency: string | null;
     amount: number;
     keyId: string;
-
 }
 
 const loadScript = (src: string) => new Promise((resolve) => {
@@ -38,9 +37,18 @@ const displayRazorpay = async (options: any) => {
     }
 }
 
+const generateTicket = async (response: any) => {
+    // const res = await axios.post(
+    //     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/payment/booking`, {
+
+    //     }
+    // );
+    console.log("response,", response);
+}
+
 const RenderRazorpay = ({ orderDetails }: { orderDetails: RenderRazorpayProps }) => {
     useEffect(() => {
-       console.log("ordr detailssssssssssssssssssssss", orderDetails);
+        console.log("ordr detailssssssssssssssssssssss", orderDetails);
         const options = {
             key: orderDetails.keyId,
             amount: orderDetails.amount,
@@ -48,7 +56,9 @@ const RenderRazorpay = ({ orderDetails }: { orderDetails: RenderRazorpayProps })
             name: 'amit',
             order_id: orderDetails.orderId,
 
-            handler: (response: any) => {},
+            handler: (response: any) => {
+                generateTicket(response);
+            },
             prefill: {
                 "name": "Gaurav Kumar",
             }
@@ -66,4 +76,5 @@ declare global {
         Razorpay: any
     }
 }
+
 

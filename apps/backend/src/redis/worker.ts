@@ -43,7 +43,7 @@ export const processQueue = async (queueName: string, seats: number[]) => {
   const movieId = bookingData.movieId;
   const userId = bookingData.userId;
   const userSocket = userSockets.get(movieId);
-  console.log("booking", bookingData);
+
   
   const options = {
     amount: bookingData.amount,

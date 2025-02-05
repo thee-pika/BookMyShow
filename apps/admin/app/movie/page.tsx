@@ -61,7 +61,6 @@ const AddMovieForm = () => {
         if (e.target.files && e.target.files[0]) {
             setFiles({...files!, [name]: e.target.files[0]})
         }
-
     }
 
     const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
