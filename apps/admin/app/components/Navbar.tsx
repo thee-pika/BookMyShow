@@ -1,28 +1,42 @@
 "use client"
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import useAuthStore from "./store";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
     const [isLoggedIn, setisLoggedIn] = useState(false);
-    const [token, settoken] = useState("")
+    const [role, setrole] = useState("");
+    const router = useRouter();
+
+    const data = sessionStorage.getItem("access_token");
 
     useEffect(() => {
-        const newToken = sessionStorage.getItem("access_token");
-        if (newToken) {
-            settoken(newToken);
-            setisLoggedIn(true);
-        } else {
-            setisLoggedIn(false);
+        if (data) {
+            const userDetails = JSON.parse(data);
+            console.log("user Details,", userDetails.token);
+            const token = userDetails.token;
+            if (!token) {
+                console.log("im in token ")
+                setisLoggedIn(false);
+
+            } else {
+                setisLoggedIn(true);
+                setrole(userDetails.role);
+                console.log("role,", role)
+                router.push("/auth/login");
+            }
         }
-    }, [])
+
+    }, [data, router, role])
 
     function handleLogout(): void {
         sessionStorage.removeItem("access_token");
+        router.refresh();
         setisLoggedIn(false);
+        setrole("");
     }
-    //#1A1B33
+
     return (
         <>
             <div className="navbar  h-16 top-0 sticky z-50 w-[100%] bg-[#ffffff] flex justify-between items-center">
@@ -51,13 +65,14 @@ const Navbar = () => {
                             <span className="pl-2"> Your Tickets</span>
                         </div>
                     </Link>
-                    <Link href={"/movie"}>
-                        <div className="item1 hover:underline m-4">New Movie</div>
-                    </Link>
-                    <Link href={"/"}>
-                        <div className="item1 hover:underline m-4">Home</div>
-                    </Link>
-                    <div className="item1 hover:underline m-4">About</div>
+                    {
+                        role === "admin" && <Link href={"/movie"}>
+                            <div className="item1 hover:underline m-4">New Movie</div>
+                        </Link>
+                    }
+                    
+                    <Link href={"/about"}>
+                        <div className="item1 hover:underline m-4">About</div></Link>
                     {
                         !isLoggedIn ? <Link href={"/auth/login"}>
                             <div className="item1 hover:underline m-4">Login</div>

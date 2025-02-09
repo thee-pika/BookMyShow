@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,69 +8,81 @@ datasource db {
 }
 
 model User {
-  id               String          @id       @default(uuid())
-  username         String
-  password         String
-  bookings         Booking[]
-  payments         Payments[]
-  role             String            @default("user")
-  token            String?
-  seats            Seat[]
-  movies           Movie[] 
+  id       String     @id @default(uuid())
+  username String     @unique
+  password String
+  role     String     @default("user")
+  token    String?
+  bookings Booking[]
+  movies   Movie[]
+  payments Payments[]
+  review   Review[]
+  seats    Seat[]
 }
 
 model Movie {
-  id               String          @id       @default(uuid())
-  title            String 
-  description      String
-  imageUrl         String
-  bokings          Booking[]
-  userId           String         
-  user             User           @relation(fields:[userId] , references:[id])
-  seats            Seat[]
-  seatPrice        Int
-  totalSeats       Int        
-  cinemahall       String
-  startTime        String
-  banner           String
-  year             Int
-  genre            GenreType
-  language         LanguageType
-  trailerId        String?
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  imageUrl    String
+  totalSeats  Int
+  userId      String
+  cinemahall  String
+  seatPrice   Int
+  startTime   String
+  genre       GenreType
+  language    LanguageType
+  trailerId   String?
+  year        Int
+  banner      String
+  bokings     Booking[]
+  user        User         @relation(fields: [userId], references: [id])
+  reviews     Review[]
+  seats       Seat[]
+}
+
+model Review {
+  id      String @id @default(uuid())
+  movieId String
+  userId  String
+  review  String
+  rating  Int
+  movie   Movie  @relation(fields: [movieId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model Booking {
-  id                 String          @id       @default(uuid())
-  totalPrice         Int
-  imageUrl           String
-  movieId            String         
-  userId             String   
-  movie              Movie           @relation(fields:[movieId], references:[id])       
-  user               User            @relation(fields:[userId], references:[id])
-  paymentId          String
-  payment            Payments        @relation(fields:[paymentId] , references:[id])
-  totalSeats         Int             @default(0)
+  id         String   @id @default(uuid())
+  totalPrice Int
+  movieId    String
+  userId     String
+  paymentId  String
+  totalSeats Int      @default(0)
+  imageUrl   String
+  movie      Movie    @relation(fields: [movieId], references: [id])
+  payment    Payments @relation(fields: [paymentId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model Seat {
-  id                 String         @id       @default(uuid())
-  seatNo             Int
-  status             seatStatus
-  movieId            String         
-  userId             String   
-  movie              Movie           @relation(fields:[movieId], references:[id])       
-  user               User            @relation(fields:[userId], references:[id])       
-  price              Int?
-  orderId            String
+  id      String     @id @default(uuid())
+  seatNo  Int
+  movieId String
+  userId  String
+  price   Int?
+  orderId String
+  status  seatStatus
+  movie   Movie      @relation(fields: [movieId], references: [id])
+  user    User       @relation(fields: [userId], references: [id])
 }
 
 model Payments {
-  id                 String          @id       @default(uuid())
-  userId             String               
-  user               User            @relation(fields:[userId], references:[id])
-  paymentType        PaymentState
-  bookings           Booking[]
-  orderId            String
+  id          String       @id @default(uuid())
+  userId      String
+  paymentType PaymentState
+  orderId     String
+  bookings    Booking[]
+  user        User         @relation(fields: [userId], references: [id])
 }
 
 enum LanguageType {
@@ -100,12 +106,12 @@ enum GenreType {
 }
 
 enum seatStatus {
-  available    
+  available
   booked
-  pending  
+  pending
 }
 
 enum seatType {
-  General    
-  Vip    
+  General
+  Vip
 }

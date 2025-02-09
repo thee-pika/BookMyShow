@@ -39,13 +39,6 @@ const EditMovie = () => {
     const router = useRouter();
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
-    // const [color, setColor] = useState("#000000");
-
-    // const override: CSSProperties = {
-    //     display: "block",
-    //     margin: "0 auto",
-    //     borderColor: "black",
-    // };
 
     const [movieData, setMovieData] = useState<MovieData | null>({
         title: "",
@@ -75,17 +68,16 @@ const EditMovie = () => {
             const res = await axios.get(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
             );
-            console.log("res", res.data);
+           
             if (res.statusText === "OK") {
                 setMovieData(res.data.movie);
-                console.log("movie dta", movieData);
-                // setSelectedOption({...selectedOption, language: res.data.movie.language})
-                // setSelectedOption({...selectedOption, genre: res.data.movie.genre})
+               
+               
             }
         } catch (error) {
             console.log("error", error);
             setLoading(false);
-        }
+        } 
     }
 
     useEffect(() => {
@@ -119,9 +111,6 @@ const EditMovie = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        toast.success("im herere  ........");
-        // const token = sessionStorage.getItem("access_token");
-        // console.log("token", token);
 
         const image = files?.imageUrl ? await UploadToCloudianary(files!.imageUrl!) : movieData?.imageUrl;
         const image2 = files?.banner ? await UploadToCloudianary(files!.banner!) : movieData?.banner
@@ -137,10 +126,13 @@ const EditMovie = () => {
                 withCredentials: true
             }
         )
-        console.log("res", res)
+     
         if (res.status === 200) {
             toast.success("Movie Updated successfully!!");
-            router.push("/");
+            setTimeout(() => {
+                router.push("/");
+            },1000)
+           
         }
     };
 
@@ -322,6 +314,7 @@ const EditMovie = () => {
                                 }
                             </select>
                         </div>
+                        
                         <div className="mb-4">
                             <label className="block font-medium mb-1">Language</label>
                             <select
@@ -339,7 +332,6 @@ const EditMovie = () => {
                                         <option value={lang} key={lang}>{lang}</option>
                                     ))
                                 }
-
                             </select>
 
                         </div>

@@ -11,28 +11,33 @@ const ImageSlider = () => {
   ];
   return (
     <>
-      <div className="image-slider bg-[#EEEFF1]">
+      <div className="image-slider bg-[#EEEFF1] p-4">
         <Swiper
-          slidesPerView={"auto"}
-          spaceBetween={-40}
-          centeredSlides={true}
+          slidesPerView={2.5}
+          spaceBetween={20}
+          centeredSlides={false}
           loop={true}
           autoplay={{
             delay: 3000,
             disableOnInteraction: false,
           }}
           modules={[Autoplay]}
+          breakpoints={{
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            768: { slidesPerView: 1, spaceBetween: 30 },
+            1024: { slidesPerView: 2.5, spaceBetween: 40 },
+          }}
+          
           className="w-full"
         >
           {images.map((image, index) => (
             <SwiperSlide key={index} className="slider-slide">
-              <div className="relative aspect-[21/9] w-full h-[300px] overflow-hidden rounded-lg mt-4">
+              <div className="relative aspect-[21/9] w-full  overflow-hidden rounded-lg mt-4">
                 <Image
                   src={image}
                   alt={`Slide ${index + 1}`}
                   fill
                   className="object-cover"
-                  priority={index < 3}
                 />
               </div>
             </SwiperSlide>

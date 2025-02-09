@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import { redisClient } from '../redis/worker.js';
-import { client } from '@repo/db/client';
+import  client  from '@repo/db/client';
 
 cron.schedule('*/10 * * * *', async () => {
     console.log('Running cron job to check for expired payments...')

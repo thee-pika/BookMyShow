@@ -8,16 +8,13 @@ import { useEffect, useState } from "react";
 import ImageSlider from "./components/ImageSlider";
 import Sidebar from "./components/Sidebar";
 import UpcomingMovies from "./components/UpcomingMovies";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 dotenv.config();
 
-interface cinemaHall {
-  name: string;
-}
-
 interface City {
   name: string;
-  cinemaHalls: cinemaHall[];
+  cinemaHalls: string
 }
 
 interface Movie {
@@ -32,9 +29,10 @@ interface Movie {
 
 export default function Home() {
   const [movies, setMovies] = useState<Movie[] | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [fileteredMovies, setfileteredMovies] = useState<Movie[] | null>(null);
-
+  const [loading, setLoading] = useState(true);
 
   const [selectedItems, setselectedItems] = useState({
     language: "All",
@@ -50,29 +48,46 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const filteredFilms = movies?.filter((movie) => {
-      const selectedLang =
-        selectedItems.language === "All" ||
-        movie.language.toLowerCase() === selectedItems.language.toLowerCase();
-      const selectGenre =
-        movie.genre.toLowerCase() === selectedItems.genre.toLowerCase();
-      const searchedItem = movie.title
-        .toLowerCase()
-        .includes(searchItem.toLowerCase());
-      return selectedLang && selectGenre && searchedItem;
-    });
-    console.log("movies", movies);
-    console.log("filetered", filteredFilms);
-    setfileteredMovies(filteredFilms!);
-    console.log("filtered movies", filteredFilms);
+    try {
+      const filteredFilms = movies?.filter((movie) => {
+        const selectedLang =
+          selectedItems.language === "All" ||
+          movie.language.toLowerCase() === selectedItems.language.toLowerCase();
+        const selectGenre =
+          movie.genre.toLowerCase() === selectedItems.genre.toLowerCase();
+        const searchedItem = movie.title
+          .toLowerCase()
+          .includes(searchItem.toLowerCase());
+        return selectedLang && selectGenre && searchedItem;
+      });
+
+      setfileteredMovies(filteredFilms!);
+    } catch (error) {
+      setLoading(false)
+    } finally {
+      setLoading(false)
+    }
+
   }, [movies, searchItem, selectedItems.genre, selectedItems.language])
 
   const getMovies = async () => {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?page=1&limit=8`
-  );
-    setMovies(res.data.movies);
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?page=1&limit=8`
+      );
+      setMovies(res.data.movies);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-[70vh]">
+      <PropagateLoader />
+    </div>
+  }
 
   return (
     <>
@@ -82,8 +97,12 @@ export default function Home() {
           <ImageSlider />
           <div className="h-[72px] w-[1530px] shadow-lg  flex items-center justify-evenly">
             <div>
-              <button className="bg-[#EEEFF1] text-sm ml-24 p-2 px-4 rounded-md border-blue-400 border-[1px]">upcoming</button>
-              <button className="bg-[#EEEFF1] text-sm  p-2 px-4 rounded-md border-blue-200 ml-4">Now streaming</button>
+              <Link href={"/movie/upcoming"}>
+                <button className="bg-[#EEEFF1] text-sm ml-24 p-2 px-4 rounded-md border-blue-400 border-[1px]">upcoming</button>
+              </Link>
+              <Link href={"/movie/streaming"}>
+                <button className="bg-[#EEEFF1] text-sm  p-2 px-4 rounded-md border-blue-200 ml-4">Now streaming</button>
+              </Link>
             </div>
 
             <div className="relative  ml-12">
@@ -108,21 +127,32 @@ export default function Home() {
           </div>
         </div>
 
+        <div className="sm:hidden p-4">
+          <button
+            onClick={() => setShowFilters(true)}
+            className="bg-blue-500 text-white p-2 px-4 rounded-lg shadow-md"
+          >
+            Filters
+          </button>
+        </div>
+
         {/* Movie List */}
-        <div className="flex mx-auto bg-[#F6F6F6] mt-8 justify-center">
-          <Sidebar
-            selectedItems={selectedItems}
-            setSelectedItems={setselectedItems}
-          />
-          <div className="w-[65vw] bg-white rounded-xl shadow-sm">
-            <div className="flex flex-wrap justify-center">
+        <div className=" sm:flex mx-auto bg-[#F6F6F6] mt-8 justify-center">
+          <div className="hidden md:block">
+            <Sidebar
+              selectedItems={selectedItems}
+              setSelectedItems={setselectedItems}
+            />
+          </div>
+          <div className="w-[65vw] bg-white rounded-xl shadow-sm mx-auto">
+            <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 justify-items-center p-6">
               {fileteredMovies ? (
                 fileteredMovies.map((movie: Movie) => (
                   <div
                     key={movie.id}
                     className="m-8 shadow-sm rounded-md overflow-hidden"
                   >
-                    <div className="w-[260px] h-[400px] relative overflow-hidden">
+                    <div className="w-[290px] h-[400px] relative overflow-hidden">
                       <Link href={`/movie/${movie.id}`}>
                         <Image
                           src={movie.imageUrl}
@@ -141,6 +171,36 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {showFilters && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-[90vw] max-w-lg relative">
+              {/* Close Button */}
+              <button
+                onClick={() => setShowFilters(false)}
+                className="absolute top-2 right-4 text-gray-500 text-2xl font-bold"
+              >
+                &times;
+              </button>
+
+              {/* Sidebar Content */}
+              <h2 className="text-lg font-bold mb-4">Filters</h2>
+              <Sidebar
+                selectedItems={selectedItems}
+                setSelectedItems={setselectedItems}
+              />
+
+              {/* Apply Filters Button */}
+              <button
+                onClick={() => setShowFilters(false)}
+                className="mt-4 w-full bg-blue-500 text-white p-2 rounded-lg"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="bg-[#F6F6F6] ml-12 mt-8">
           <UpcomingMovies />
         </div>

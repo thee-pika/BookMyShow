@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { client } from "@repo/db/client";
+import  client  from "@repo/db/client";
 
 export const bookingRouter: Router = Router();
 

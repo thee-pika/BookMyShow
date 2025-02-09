@@ -1,6 +1,6 @@
 
 import jwt from "jsonwebtoken";
-import { client } from "@repo/db/client";
+import  client  from "@repo/db/client";
 import { signinSchema, signUpUserSchema } from "@repo/types/types"
 import dotenv from "dotenv"
 import { Router } from "express";

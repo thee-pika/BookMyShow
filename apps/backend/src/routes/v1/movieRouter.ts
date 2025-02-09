@@ -1,11 +1,9 @@
 import { createMovieSchema, updateMovieSchema } from "@repo/types/types";
 import { Router } from "express";
 import { AuthMiddleWare } from "../../middlewares/AuthMiddleware.js";
-import { client } from "@repo/db/client";
+import  client  from "@repo/db/client";
 import { verifyJwt } from "../../controlleres/userController.js";
 import { adminMiddleWare } from "../../middlewares/admin.js";
-
-
 import dotenv from "dotenv";
 import express from "express";
 dotenv.config();
@@ -75,6 +73,51 @@ movieRouter.get("/", async (req, res) => {
     })
 })
 
+movieRouter.get("/upcoming", async (req, res) => {
+ 
+    const currentTime = new Date().toISOString();
+
+    const upcomingMovies = await client.movie.findMany({
+        where: {
+            startTime: {
+                gt: currentTime
+            }
+        }
+    })
+
+    console.log("upcoming,", upcomingMovies);
+    if (upcomingMovies.length < 1) {
+        res.status(400).json({ message: "no upcoming movies found!!" });
+        return;
+    }
+
+    res.status(200).json({ upcomingMovies });
+})
+
+movieRouter.get("/streaming", async (req, res) => {
+ 
+    const lowerBound = new Date().toISOString();
+    console.log("lowerBound time", lowerBound);
+    const upperBound = new Date(Date.now() + 7*24*60*60*1000).toISOString();
+    console.log("upperBound time", upperBound);
+    const streamingMovies = await client.movie.findMany({
+        where: {
+            startTime: {
+                gte: lowerBound,
+                lte: upperBound
+            }
+        }
+    })
+
+    console.log("upcoming,", streamingMovies);
+    if (streamingMovies.length < 1) {
+        res.status(400).json({ message: "no upcoming movies found!!" });
+        return;
+    }
+
+    res.status(200).json({ streamingMovies });
+})
+
 movieRouter.get("/:id/seats", async (req, res) => {
     const movieId = req.params.id;
 
@@ -109,6 +152,7 @@ movieRouter.get("/:id/seats", async (req, res) => {
     })
 })
 movieRouter.get("/:id", async (req, res) => {
+    console.log(" u cheated meee");
     const movieId = req.params.id;
 
     const movie = await client.movie.findFirst({
@@ -124,9 +168,9 @@ movieRouter.get("/:id/similar", async (req, res) => {
     const movieId = req.params.id;
 
     const movie = await client.movie.findFirst({
-        where: {id: movieId}
+        where: { id: movieId }
     })
-    
+
     if (!movie) {
         console.log("are we here...");
         res.status(400).json({ message: "no movies found!!" });
@@ -135,11 +179,11 @@ movieRouter.get("/:id/similar", async (req, res) => {
 
     const similarMovies = await client.movie.findMany({
         where: {
-            id: {not: movieId},
+            id: { not: movieId },
             OR: [
-                {genre: movie.genre},
-                {language: movie.language},
-                {year: movie.year}
+                { genre: movie.genre },
+                { language: movie.language },
+                { year: movie.year }
             ]
         }
     });
@@ -148,7 +192,6 @@ movieRouter.get("/:id/similar", async (req, res) => {
 })
 
 movieRouter.put("/:id", verifyJwt, adminMiddleWare, async (req, res) => {
-    console.log("im editing a movie put request");
     const movieId = req.params.id;
 
     const parsedData = updateMovieSchema.safeParse(req.body.movieData);

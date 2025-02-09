@@ -15,6 +15,17 @@ export const signupAdminSchema = z.object(
     }
 )
 
+export const addReviewSchema = z.object({
+    movieId: z.string(),
+    review: z.string(),
+    rating: z.number()
+})
+
+export const updateReviewSchema = z.object({
+    review: z.string(),
+    rating: z.number()
+})
+
 export const signinSchema = z.object({
     username: z.string(),
     password: z.string().min(6),

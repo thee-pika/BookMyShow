@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
-import { client } from "@repo/db/client";
+import  client  from "@repo/db/client";
 dotenv.config();
 
 export const getRefreshedAccessToken = async (refreshToken: string) => {
@@ -10,7 +10,6 @@ export const getRefreshedAccessToken = async (refreshToken: string) => {
     const secret = process.env.JWT_REFRESH_TOKEN_SECRET;
     if (!secret) {
         throw new Error(" secrets are not defined!");
-
     }
 
     const decoded = jwt.verify(userrefreshToken, secret);

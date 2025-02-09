@@ -2,7 +2,7 @@ import Redis, { RedisClientType } from "redis";
 import { v4 as uuidv4 } from "uuid";
 import createOrder from "../controlleres/createOrder.js";
 import { io } from "../socket/socket.js";
-import { client } from "@repo/db/client";
+import  client  from "@repo/db/client";
 const userSockets = new Map();
 
 io.on('connection', (socket) => {

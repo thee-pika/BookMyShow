@@ -8,6 +8,7 @@ import UploadToCloudianary from "../components/cloudinary/UploadToCloudianary";
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
+import PropagateLoader from "react-spinners/PropagateLoader";
 dotenv.config();
 
 interface MovieData {
@@ -24,11 +25,22 @@ interface MovieData {
 }
 
 interface FileType {
-    file1: File|null,
-    file2: File|null
+    file1: File | null,
+    file2: File | null
 }
 const AddMovieForm = () => {
     const router = useRouter();
+    const [loading, setLoading] = useState(true);
+
+    const data = sessionStorage.getItem("access_token");
+
+    if (data) {
+        const userDetails = JSON.parse(data);
+        const token = userDetails.token;
+        if (!token) {
+            router.push("/auth/login");
+        }
+    }
 
     const [selectedOption, setSelectedOption] = useState({
         language: "",
@@ -48,7 +60,7 @@ const AddMovieForm = () => {
         trailerId: ""
     });
 
-    const [files, setFiles] = useState<FileType|null>({
+    const [files, setFiles] = useState<FileType | null>({
         file1: null,
         file2: null
     });
@@ -56,10 +68,16 @@ const AddMovieForm = () => {
     const languages = ["Telugu", "Hindi", "English", "Tamil", "Malayalam"]
     const genres = ["Action", "Thriller", "Horror"]
 
+    if (loading) {
+        return <div className="flex justify-center items-center h-[70vh]">
+            <PropagateLoader />
+        </div>
+    }
+    
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name } = e.target;
         if (e.target.files && e.target.files[0]) {
-            setFiles({...files!, [name]: e.target.files[0]})
+            setFiles({ ...files!, [name]: e.target.files[0] })
         }
     }
 
@@ -71,35 +89,36 @@ const AddMovieForm = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const token = sessionStorage.getItem("access_token");
-        console.log("token", token);
 
-        const image = await UploadToCloudianary(files!.file1!);
-        const image2 = await UploadToCloudianary(files!.file2!);
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie`, {
-            title: movieData!.title,
-            description: movieData!.description,
-            totalSeats: movieData!.totalSeats,
-            imageUrl: image,
-            seatPrice: movieData?.seatPrice,
-            startTime: (movieData!.startTime),
-            cinemahall: movieData?.cinemahall,
-            language: movieData?.language,
-            banner: image2,
-            genre: movieData?.genre,
-            year: movieData?.year,
-            trailerId: movieData?.trailerId
-        },
-            {
-                headers: {
-                    authorization: `Bearer ${token}`
-
+        try {
+            const image = await UploadToCloudianary(files!.file1!);
+            const image2 = await UploadToCloudianary(files!.file2!);
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie`, {
+                title: movieData!.title,
+                description: movieData!.description,
+                totalSeats: movieData!.totalSeats,
+                imageUrl: image,
+                seatPrice: movieData?.seatPrice,
+                startTime: (movieData!.startTime),
+                cinemahall: movieData?.cinemahall,
+                language: movieData?.language,
+                banner: image2,
+                genre: movieData?.genre,
+                year: movieData?.year,
+                trailerId: movieData?.trailerId
+            },
+                {
+                    withCredentials: true
                 }
+            )
+
+            if (res.status === 200) {
+                router.push("/");
             }
-        )
-        console.log("res", res)
-        if (res.status === 200) {
-            router.push("/");
+        } catch (error: any) {
+            setLoading(false)
+        } finally {
+            setLoading(false)
         }
     };
 

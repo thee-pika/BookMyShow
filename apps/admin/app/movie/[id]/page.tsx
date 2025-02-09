@@ -3,9 +3,13 @@ import axios from "axios";
 import dotenv from "dotenv";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import toast, { Toaster } from 'react-hot-toast';
 import { useEffect, useState } from "react";
 import SimilarMoviesSlider from "../../components/similarMoviesSlider";
+import ReviewComponent from "../../components/ReviewComponent";
+import PropagateLoader from "react-spinners/PropagateLoader";
+
 
 dotenv.config();
 
@@ -28,28 +32,52 @@ interface MovieData {
 const GetMovieByItsId = () => {
   const [movie, setMovie] = useState<MovieData | null>(null);
   const { id } = useParams();
+  const [role, setrole] = useState("");
+  const [loading, setLoading] = useState(true);
 
+  const router = useRouter();
+  const data = sessionStorage.getItem("access_token");
 
   useEffect(() => {
-    getMovie();
+    if (data) {
+      const userDetails = JSON.parse(data);
+
+      if (userDetails) {
+        setrole(userDetails.role);
+      }
+    } else {
+      setrole("");
+    }
+
+  }, [data, role])
+
+  useEffect(() => {
+    if (id) {
+      getMovie();
+    }
   }, []);
 
   const getMovie = async () => {
-    if (!id) {
-      console.log("there was a eror");
-      return;
-    }
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
-    );
-    if (res.statusText === "OK") {
-      setMovie(res.data.movie);
-      console.log("res movie, ", res.data.movie);
-
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
+      );
+      if (res.statusText === "OK") {
+        setMovie(res.data.movie);
+        console.log("res movie, ", res.data.movie);
+      }
+    } catch (error) {
+      setLoading(false)
+    } finally {
+      setLoading(false)
     }
   };
 
-
+  if (loading) {
+    return <div className="flex justify-center items-center h-[70vh]">
+      <PropagateLoader />
+    </div>
+  }
 
   const handleDelete = async (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     const permision = window.confirm("Are you sure! You want to delete??");
@@ -62,7 +90,11 @@ const GetMovieByItsId = () => {
       )
       console.log("res", res);
       if (res.status === 200) {
-        alert("Movie deleted successfully");
+
+        toast.success("Movie deleted successfully");
+        setTimeout(() => {
+          router.push("/");
+        }, 1000)
       }
     }
   }
@@ -94,7 +126,6 @@ const GetMovieByItsId = () => {
                   objectFit="cover"
                 />
               </div>
-
               <div className="w-full flex flex-col mt-24 md:w-[55%] lg:w-[60%] pl-12 space-y-6">
                 <div className="flex">
                   <h1 className="text-4xl font-bold">{movie.title}
@@ -113,9 +144,19 @@ const GetMovieByItsId = () => {
                   <p className="text-lg">
                     {movie.genre}
                   </p>
-                </div>
 
+                </div>
                 <p className="text-base text-gray-300 w-[30vw]">{movie.description}</p>
+                <p className="text-lg font-bold  text-white">
+                  startsAt:
+                  {new Date(movie.startTime!).toLocaleString('en-Us', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
                 <div>
                   <Link href={`/movie/${movie.id}/seats`}>
                     <button className="px-20 mt-20 py-3 bg-[#F84464] hover:bg-[#cc0a0a] text-white font-semibold rounded-lg">
@@ -125,25 +166,26 @@ const GetMovieByItsId = () => {
                 </div>
               </div>
 
-              <div className="flex pb-108">
-                <span >
-                  <Link href={`/movie/${movie.id}/edit`}>
+              {
+                role === "admin" && <div className="flex pb-108">
+                  <span >
+                    <Link href={`/movie/${movie.id}/edit`}>
+                      <Image
+                        src={"/assets/edit-svgrepo-com.svg"} alt={""} width={30} height={30} className="m-2" />
+                    </Link>
+                  </span>
+                  <span onClick={handleDelete}>
                     <Image
-                      src={"/assets/edit-svgrepo-com.svg"} alt={""} width={30} height={30} className="m-2" />
-                  </Link>
-                </span>
-                <span onClick={handleDelete}>
-                  <Image
-                    src={'/assets/delete-2-svgrepo-com.svg'}
-                    alt={""}
-                    width={30}
-                    height={30}
-                    className="m-2"
-                  />
-                </span>
-              </div>
+                      src={'/assets/delete-2-svgrepo-com.svg'}
+                      alt={""}
+                      width={30}
+                      height={30}
+                      className="m-2"
+                    />
+                  </span>
+                </div>
+              }
             </div>
-            <div className="bg-red-900">hello everyone</div>
             {/* <div>
             <SimilarMoviesSlider images={movieImages} />
           </div> */}
@@ -154,6 +196,12 @@ const GetMovieByItsId = () => {
           </div>
         )}
       </div>
+      {/* review Section */}
+
+      <div className="review">
+        {id && <ReviewComponent movieId={id as string} />}
+      </div>
+
       <div className="">
         {
           movie ? (

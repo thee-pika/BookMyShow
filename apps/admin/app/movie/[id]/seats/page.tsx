@@ -4,6 +4,7 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import RenderRazorpay from "../../../components/razorpay/RenderRazorpay";
 import io from "socket.io-client";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 const ChooseSeats = () => {
 
@@ -13,6 +14,7 @@ const ChooseSeats = () => {
     const [selectedSeats, setselectedSeats] = useState<number[]>([]);
     const [pendingSeats, setpendingSeats] = useState<number[]>([]);
     const [bookedSeats, setBookedSeats] = useState<number[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const [orderDetails, setorderDetails] = useState({
         orderId: "",
@@ -52,10 +54,34 @@ const ChooseSeats = () => {
         })
 
     }, [id])
+    
+    const getMovie = async () => {
+        try {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`);
+            setSeatPrice(res.data.movie.seatPrice);
+            setTotalSeats(res.data.movie.totalSeats);
+    
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}/seats`);
+            console.log("res seats", response.data);
+            setBookedSeats(response.data.seats);
+            setpendingSeats(response.data.pendingSeats);
+        } catch (error) {
+           setLoading(false) 
+        } finally {
+            setLoading(false) 
+        }
+    }
+
 
     useEffect(() => {
         getMovie();
     }, []);
+
+    if (loading) {
+        return <div className="flex justify-center items-center h-[70vh]">
+          <PropagateLoader />
+        </div>
+      }
 
     const createOrder = async (amount: number) => {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/payment/book`, {
@@ -72,17 +98,6 @@ const ChooseSeats = () => {
         }
     }
 
-    const getMovie = async () => {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`);
-        setSeatPrice(res.data.movie.seatPrice);
-        setTotalSeats(res.data.movie.totalSeats);
-
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}/seats`);
-        console.log("res seats", response.data);
-        setBookedSeats(response.data.seats);
-        setpendingSeats(response.data.pendingSeats);
-    }
-
     const toggleSeatSelection = (seatNumber: number) => {
         setselectedSeats((prev) => selectedSeats.includes(seatNumber)
             ?
@@ -93,17 +108,14 @@ const ChooseSeats = () => {
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
-        console.log("seleseatssssssssssss in submit btn", selectedSeats);
+       
         try {
 
             const amount = selectedSeats.length * seatPrice;
 
             if (amount > 0) {
                 await createOrder(amount);
-            } else {
-                console.log("amount", amount);
-                alert("amount is low......");
-            }
+            } 
 
         } catch (error) {
             console.log("erro", error);

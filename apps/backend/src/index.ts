@@ -7,6 +7,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { paymentRouter } from "./routes/v1/paymentRouter.js";
 import "./jobs/paymentCleanupJob.js";
+import { reviewRouter } from "./routes/v1/reviewRouter.js";
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
@@ -20,6 +21,7 @@ app.use("/api/v1/auth", userRouter)
 app.use("/api/v1/auth/admin", adminRouter)
 app.use("/api/v1/movie", movieRouter)
 app.use("/api/v1/payment", paymentRouter)
+app.use("/api/v1/review", reviewRouter)
 
 httpServer.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { client } from "@repo/db/client";
+import  client  from "@repo/db/client";
 import { redisClient } from "../../redis/worker.js";
 import { processQueue } from "../../redis/worker.js";
 import nodemailer from "nodemailer";
