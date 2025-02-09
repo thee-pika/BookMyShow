@@ -8,10 +8,19 @@
       "outputs": [".next/**", "!.next/cache/**"],
       "env": [
         "PORT",
+        "NODE_ENV",
         "JWT_ACCESS_TOKEN_SECRET",
         "JWT_REFRESH_TOKEN_SECRET",
         "DATABASE_URL",
         "REDIS_HOST",
+        "REDIS_PORT",
+        "REDIS_PASSWORD",
+        "CLOUD_NAME",
+        "CLOUDINARY_KEY",
+        "CLOUDINARY_SECRET",
+        "FRONTEND_URL",
+        "RAZORPAY_KEY_ID",
+        "RAZORPAY_KEY_SECRET",
         "CLOUDINARY_URL"
       ]
     },
@@ -21,7 +30,7 @@
     },
     "check-types": {
       "dependsOn": ["^check-types"],
-      "env": []
+      "env": ["NODE_ENV"]
     },
     "dev": {
       "cache": false,
