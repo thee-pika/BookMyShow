@@ -38,6 +38,7 @@ const UpcomingMovies = () => {
             if (res.status === 200) {
                 setUpcomingMovies(res.data.upcomingMovies);
             }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             setLoading(false);
         } finally {

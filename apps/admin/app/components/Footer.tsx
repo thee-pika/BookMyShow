@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 interface MovieData {
     id: string;
@@ -38,10 +39,17 @@ const Footer = () => {
                 setUpcomingMovies(res.data.upcomingMovies);
             }
         } catch (error) {
+            console.log(error);
             setLoading(false);
         } finally {
             setLoading(false);
         }
+    }
+
+    if (loading) {
+        return <div className="flex justify-center items-center h-[70vh]">
+            <PropagateLoader />
+        </div>
     }
 
     return (

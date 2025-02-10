@@ -2,12 +2,11 @@
 import axios from "axios";
 import Link from "next/link";
 import { useState } from "react"
-import { useRouter } from "next/navigation";
 import { redirect } from 'next/navigation';
 import toast, { Toaster } from "react-hot-toast";
 
 const Signup = () => {
-    const router = useRouter();
+   
     const [signUpData, setSignupData] = useState({
         username: "",
         password: ""

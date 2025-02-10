@@ -135,8 +135,8 @@ movieRouter.get("/:id/seats", async (req, res) => {
         }
     })
 
-    const pendingSeatNo = pendingSeats.map((seat) => seat.seatNo)
-    const seatNos = seats.map((seat) => seat.seatNo)
+    const pendingSeatNo = pendingSeats.map((seat:any) => seat.seatNo)
+    const seatNos = seats.map((seat:any) => seat.seatNo)
 
     if (seats === null) {
         res.status(200).json({

@@ -8,6 +8,16 @@ interface RenderRazorpayProps {
     keyId: string;
 }
 
+interface Options {
+    order_id: string;
+    currency: string | null;
+    amount: number;
+    key: string;
+    name: string;
+    prefill: {
+        name: string
+    }
+}
 const loadScript = (src: string) => new Promise((resolve) => {
     const script = document.createElement('script');
     script.src = src;
@@ -25,7 +35,7 @@ const loadScript = (src: string) => new Promise((resolve) => {
     document.body.appendChild(script);
 });
 
-const displayRazorpay = async (options: any) => {
+const displayRazorpay = async (options: Options) => {
 
     const res = await loadScript(
         'https://checkout.razorpay.com/v1/checkout.js',
@@ -47,9 +57,9 @@ const RenderRazorpay = ({ orderDetails }: { orderDetails: RenderRazorpayProps })
             name: 'amit',
             order_id: orderDetails.orderId,
 
-            handler: (response: any) => {
-                // razorpay_payment_id
-            },
+            // handler: (response: unknown) => {
+            //     // razorpay_payment_id
+            // },
             prefill: {
                 "name": "Gaurav Kumar",
             }
@@ -64,7 +74,13 @@ export default RenderRazorpay;
 
 declare global {
     interface Window {
-        Razorpay: any
+        Razorpay: {
+            new (options: Options): {
+                open: () => void;
+                close: () => void;
+                on(event: string, handler: (response: unknown) => void): void;
+            };
+        }
     }
 }
 

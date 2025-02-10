@@ -41,20 +41,24 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
 
     }, [data])
 
+  
+    
     useEffect(() => {
+        const getReviews = async () => {
+            try {
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/review//movies/${movieId}`);
+                setAllReviews(res.data.reviews);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (error) {
+                setLoading(false);
+            } finally {
+                setLoading(false);
+            }
+        }
+
         getReviews();
     }, []);
 
-    const getReviews = async () => {
-        try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/review//movies/${movieId}`);
-            setAllReviews(res.data.reviews);
-        } catch (error) {
-            setLoading(false);
-        } finally {
-            setLoading(false);
-        }
-    }
     if (loading) {
         return <div className="flex justify-center items-center h-[70vh]">
             <PropagateLoader />

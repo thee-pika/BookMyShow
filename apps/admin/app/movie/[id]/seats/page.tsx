@@ -25,10 +25,10 @@ const ChooseSeats = () => {
 
     const [seatPrice, setSeatPrice] = useState(0);
 
-    const [seats, setSeats] = useState({
-        seatCount: 0,
-        type: ""
-    })
+    // const [seats, setSeats] = useState({
+    //     seatCount: 0,
+    //     type: ""
+    // })
 
     useEffect(() => {
         const socket = io("http://localhost:8000");
@@ -65,6 +65,7 @@ const ChooseSeats = () => {
             console.log("res seats", response.data);
             setBookedSeats(response.data.seats);
             setpendingSeats(response.data.pendingSeats);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
            setLoading(false) 
         } finally {

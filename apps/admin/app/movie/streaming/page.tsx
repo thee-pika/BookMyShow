@@ -38,6 +38,7 @@ const StreamingMovies = () => {
             if (res.status === 200) {
                 setStreamingMovies(res.data.streamingMovies);
             }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             setLoading(false)
         } finally {

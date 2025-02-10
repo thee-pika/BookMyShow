@@ -37,7 +37,7 @@ const Ticket = () => {
             })
             setTickets(res.data.bookings);
         } catch (error) {
-            console.log("error")
+            console.log("", error);
             setLoading(false);
         } finally {
             setLoading(false)

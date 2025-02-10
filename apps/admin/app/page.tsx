@@ -62,6 +62,7 @@ export default function Home() {
       });
 
       setfileteredMovies(filteredFilms!);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setLoading(false)
     } finally {
@@ -76,6 +77,7 @@ export default function Home() {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?page=1&limit=8`
       );
       setMovies(res.data.movies);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setLoading(false);
     } finally {

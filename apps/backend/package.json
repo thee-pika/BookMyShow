@@ -8,16 +8,15 @@
     "dev": "node dist/index.js",
     "start": "set NODE_ENV=production && node dist/index.js"
   },
-  "devDependencies": {
-    "@repo/db": "workspace:*",
-    "@repo/types": "workspace:*",
-    "@repo/typescript-config": "workspace:*"
-  },
+  "devDependencies": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",

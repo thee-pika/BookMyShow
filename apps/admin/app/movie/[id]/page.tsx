@@ -51,12 +51,6 @@ const GetMovieByItsId = () => {
 
   }, [data, role])
 
-  useEffect(() => {
-    if (id) {
-      getMovie();
-    }
-  }, []);
-
   const getMovie = async () => {
     try {
       const res = await axios.get(
@@ -66,12 +60,20 @@ const GetMovieByItsId = () => {
         setMovie(res.data.movie);
         console.log("res movie, ", res.data.movie);
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setLoading(false)
     } finally {
       setLoading(false)
     }
   };
+  
+  useEffect(() => {
+    if (id) {
+      getMovie();
+    }
+  }, []);
+
 
   if (loading) {
     return <div className="flex justify-center items-center h-[70vh]">
@@ -79,7 +81,7 @@ const GetMovieByItsId = () => {
     </div>
   }
 
-  const handleDelete = async (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+  const handleDelete = async () => {
     const permision = window.confirm("Are you sure! You want to delete??");
     console.log("permission", permision);
     if (permision) {
@@ -211,6 +213,7 @@ const GetMovieByItsId = () => {
           ) : ""
         }
       </div>
+      <Toaster/>
     </>
   );
 };
