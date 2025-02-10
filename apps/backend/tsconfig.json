@@ -7,11 +7,9 @@
         "baseUrl": ".", 
         "paths": {
           "@repo/db/*": [
-            "node_modules/@repo/db/*",  
             "../packages/db/*"  
           ],
           "@repo/types/*": [
-            "node_modules/@repo/types/*",  
             "../packages/types/*"
           ]
         }
