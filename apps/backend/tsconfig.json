@@ -6,10 +6,10 @@
         "typeRoots": ["./node_modules/@types","./src/types"],
         "baseUrl": ".", 
         "paths": {
-          "@repo/db/*": [
+          "@repo/db": [
             "../packages/db/*"  
           ],
-          "@repo/types/*": [
+          "@repo/types": [
             "../packages/types/*"
           ]
         }
