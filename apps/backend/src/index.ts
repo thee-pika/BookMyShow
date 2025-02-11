@@ -23,6 +23,10 @@ app.use("/api/v1/movie", movieRouter)
 app.use("/api/v1/payment", paymentRouter)
 app.use("/api/v1/review", reviewRouter)
 
+app.get("/", (req,res) => {
+    res.send("App is running");
+})
+
 httpServer.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
