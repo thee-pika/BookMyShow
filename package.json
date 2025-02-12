@@ -8,8 +8,9 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
- "build-backend": "cd apps/backend && turbo run build --filter=backend",
- "start-backend": "cd apps/backend && pnpm run start",
+    "build-backend": "cd apps/backend && turbo run build --filter=backend",
+    "start-backend": "cd apps/backend && pnpm run start",
+    "build-frontend": "cd apps/admin && pnpm install && pnpm run start",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
