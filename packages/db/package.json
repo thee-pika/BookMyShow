@@ -7,7 +7,7 @@
     "./client": "./dist/index.js"
   },
   "scripts": {
-    "build": "pnpm install && tsc -b",
+    "build": "pnpm install && prisma generate && tsc -b",
     "dev": "node dist/index.js"
   },
   "devDependencies": {},
