@@ -34,8 +34,8 @@ const AddMovieForm = () => {
     const [data, setData] = useState<string | null>(null);
 
     useEffect(() => {
-
-        const data = sessionStorage.getItem("access_token");
+        if (typeof window !== 'undefined') {
+        const data = localStorage.getItem("access_token");
         setData(data);
         if (data) {
             const userDetails = JSON.parse(data);
@@ -44,6 +44,7 @@ const AddMovieForm = () => {
                 router.push("/auth/login");
             }
         }
+    }
     }, [router])
 
 

@@ -38,15 +38,17 @@ const GetMovieByItsId = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const data = sessionStorage.getItem("access_token");
-    if (data) {
-      const userDetails = JSON.parse(data);
-
-      if (userDetails) {
-        setrole(userDetails.role);
+    if (typeof window !== 'undefined') {
+      const data = localStorage.getItem("access_token");
+      if (data) {
+        const userDetails = JSON.parse(data);
+  
+        if (userDetails) {
+          setrole(userDetails.role);
+        }
+      } else {
+        setrole("");
       }
-    } else {
-      setrole("");
     }
 
   }, [role])

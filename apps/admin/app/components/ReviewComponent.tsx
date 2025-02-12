@@ -32,7 +32,7 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
     useEffect(() => {
         if (typeof window !== "undefined") {
 
-            const sessionData = sessionStorage.getItem("access_token");
+            const sessionData = localStorage.getItem("access_token");
             setData(sessionData);
 
             if (sessionData) {

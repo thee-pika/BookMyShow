@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
-const router = useRouter();
+    const router = useRouter();
     const [loginData, setLoginData] = useState({
         username: "",
         password: ""
@@ -30,17 +30,20 @@ const router = useRouter();
 
         if (res.status === 200) {
             const data = {
-                token : res.data.access_token,
+                token: res.data.access_token,
                 role: res.data.user.role
             }
-            sessionStorage.setItem("access_token", JSON.stringify(data));
+            if (typeof window !== "undefined") {
+                localStorage.setItem("access_token", JSON.stringify(data));
 
-            toast.success("Logged In Successfully!!");
-            router.refresh();
-            setTimeout(() => {
-                redirect("/");
-            }, 1000)
+                toast.success("Logged In Successfully!!");
+                router.refresh();
+                setTimeout(() => {
+                    redirect("/");
+                }, 1000)
+            }
         }
+
     }
 
     return (

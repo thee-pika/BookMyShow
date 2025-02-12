@@ -9,32 +9,34 @@ const Navbar = () => {
     const [role, setrole] = useState("");
     const router = useRouter();
 
-    const data = sessionStorage.getItem("access_token");
-
     useEffect(() => {
-        if (data) {
-            const userDetails = JSON.parse(data);
-            console.log("user Details,", userDetails.token);
-            const token = userDetails.token;
-            if (!token) {
-                console.log("im in token ")
-                setisLoggedIn(false);
+        if (typeof window !== "undefined") {
+            const data = localStorage.getItem("access_token");
+            if (data) {
+                const userDetails = JSON.parse(data);
 
-            } else {
-                setisLoggedIn(true);
-                setrole(userDetails.role);
-                console.log("role,", role)
-                router.push("/auth/login");
+                const token = userDetails.token;
+                if (!token) {
+                    console.log("im in token ")
+                    setisLoggedIn(false);
+
+                } else {
+                    setisLoggedIn(true);
+                    setrole(userDetails.role);
+                    console.log("role,", role)
+                    router.push("/auth/login");
+                }
             }
         }
-
-    }, [data, router, role])
+    }, [router, role])
 
     function handleLogout(): void {
-        sessionStorage.removeItem("access_token");
+        if (typeof window !== "undefined") {
+        localStorage.removeItem("access_token");
         router.refresh();
         setisLoggedIn(false);
         setrole("");
+        }
     }
 
     return (
@@ -70,7 +72,7 @@ const Navbar = () => {
                             <div className="item1 hover:underline m-4">New Movie</div>
                         </Link>
                     }
-                    
+
                     <Link href={"/about"}>
                         <div className="item1 hover:underline m-4">About</div></Link>
                     {
