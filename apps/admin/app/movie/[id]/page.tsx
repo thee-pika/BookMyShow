@@ -36,9 +36,9 @@ const GetMovieByItsId = () => {
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
-  const data = sessionStorage.getItem("access_token");
 
   useEffect(() => {
+    const data = sessionStorage.getItem("access_token");
     if (data) {
       const userDetails = JSON.parse(data);
 
@@ -49,7 +49,7 @@ const GetMovieByItsId = () => {
       setrole("");
     }
 
-  }, [data, role])
+  }, [role])
 
   const getMovie = async () => {
     try {
@@ -60,14 +60,14 @@ const GetMovieByItsId = () => {
         setMovie(res.data.movie);
         console.log("res movie, ", res.data.movie);
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setLoading(false)
     } finally {
       setLoading(false)
     }
   };
-  
+
   useEffect(() => {
     if (id) {
       getMovie();
@@ -213,7 +213,7 @@ const GetMovieByItsId = () => {
           ) : ""
         }
       </div>
-      <Toaster/>
+      <Toaster />
     </>
   );
 };

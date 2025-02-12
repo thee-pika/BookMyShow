@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import dotenv from "dotenv";
 import { useRouter } from "next/navigation";
@@ -31,16 +31,21 @@ interface FileType {
 const AddMovieForm = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
+    const [data, setData] = useState<string | null>(null);
 
-    const data = sessionStorage.getItem("access_token");
+    useEffect(() => {
 
-    if (data) {
-        const userDetails = JSON.parse(data);
-        const token = userDetails.token;
-        if (!token) {
-            router.push("/auth/login");
+        const data = sessionStorage.getItem("access_token");
+        setData(data);
+        if (data) {
+            const userDetails = JSON.parse(data);
+            const token = userDetails.token;
+            if (!token) {
+                router.push("/auth/login");
+            }
         }
-    }
+    }, [])
+
 
     const [selectedOption, setSelectedOption] = useState({
         language: "",
@@ -73,7 +78,7 @@ const AddMovieForm = () => {
             <PropagateLoader />
         </div>
     }
-    
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name } = e.target;
         if (e.target.files && e.target.files[0]) {

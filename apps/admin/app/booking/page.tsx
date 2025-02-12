@@ -18,12 +18,25 @@ interface Ticket {
 const Ticket = () => {
     const [loading, setLoading] = useState(true);
     const [tickets, setTickets] = useState<Ticket[] | null>([]);
+     const [data, setData] = useState<string | null>(null);
     const router = useRouter();
-    const token = sessionStorage.getItem("access_token");
 
-    if (!token) {
-        router.push("/auth/login");
-    }
+    useEffect(() => {
+            if (typeof window !== "undefined") {
+    
+                const sessionData = sessionStorage.getItem("access_token");
+                setData(sessionData);
+    
+                if (sessionData) {
+                    const userDetails = JSON.parse(sessionData);
+                    const token = userDetails?.token;
+    
+                    if (!token) {
+                        router.push("/auth/login");
+                    }
+                }
+            }
+        }, [router]);
 
     useEffect(() => {
         getTicket();
