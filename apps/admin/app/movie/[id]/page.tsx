@@ -51,28 +51,31 @@ const GetMovieByItsId = () => {
 
   }, [role])
 
-  const getMovie = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
-      );
-      if (res.statusText === "OK") {
-        setMovie(res.data.movie);
-        console.log("res movie, ", res.data.movie);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setLoading(false)
-    } finally {
-      setLoading(false)
-    }
-  };
+  
 
   useEffect(() => {
     if (id) {
+
+      const getMovie = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
+          );
+          if (res.statusText === "OK") {
+            setMovie(res.data.movie);
+            console.log("res movie, ", res.data.movie);
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          setLoading(false)
+        } finally {
+          setLoading(false)
+        }
+      };
+
       getMovie();
     }
-  }, []);
+  }, [id]);
 
 
   if (loading) {

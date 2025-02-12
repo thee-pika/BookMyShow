@@ -44,7 +44,7 @@ const AddMovieForm = () => {
                 router.push("/auth/login");
             }
         }
-    }, [])
+    }, [router])
 
 
     const [selectedOption, setSelectedOption] = useState({
@@ -120,7 +120,7 @@ const AddMovieForm = () => {
             if (res.status === 200) {
                 router.push("/");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             setLoading(false)
         } finally {
             setLoading(false)

@@ -25,30 +25,33 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
     const [editingId, setEditingId] = useState("");
     const [loading, setLoading] = useState(true);
     const [allReviews, setAllReviews] = useState<Review[]>([]);
+    const [data, setData] = useState<string | null>(null);
 
-    const data = sessionStorage.getItem("access_token");
     const router = useRouter();
 
     useEffect(() => {
-        if (data) {
-            const userDetails = JSON.parse(data);
+        if (typeof window !== "undefined") {
 
-            const token = userDetails.token;
-            if (!token) {
-                router.push("/auth/login");
+            const sessionData = sessionStorage.getItem("access_token");
+            setData(sessionData);
+
+            if (sessionData) {
+                const userDetails = JSON.parse(sessionData);
+                const token = userDetails?.token;
+
+                if (!token) {
+                    router.push("/auth/login");
+                }
             }
         }
+    }, [router]);
 
-    }, [data])
-
-  
-    
     useEffect(() => {
         const getReviews = async () => {
             try {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/review//movies/${movieId}`);
                 setAllReviews(res.data.reviews);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
                 setLoading(false);
             } finally {
@@ -57,7 +60,7 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
         }
 
         getReviews();
-    }, []);
+    }, [movieId]);
 
     if (loading) {
         return <div className="flex justify-center items-center h-[70vh]">

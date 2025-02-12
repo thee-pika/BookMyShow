@@ -18,44 +18,44 @@ interface Ticket {
 const Ticket = () => {
     const [loading, setLoading] = useState(true);
     const [tickets, setTickets] = useState<Ticket[] | null>([]);
-     const [data, setData] = useState<string | null>(null);
+    const [data, setData] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
-            if (typeof window !== "undefined") {
-    
-                const sessionData = sessionStorage.getItem("access_token");
-                setData(sessionData);
-    
-                if (sessionData) {
-                    const userDetails = JSON.parse(sessionData);
-                    const token = userDetails?.token;
-    
-                    if (!token) {
-                        router.push("/auth/login");
-                    }
+        if (typeof window !== "undefined") {
+
+            const sessionData = sessionStorage.getItem("access_token");
+            setData(sessionData);
+
+            if (sessionData) {
+                const userDetails = JSON.parse(sessionData);
+                const token = userDetails?.token;
+
+                if (!token) {
+                    router.push("/auth/login");
                 }
             }
-        }, [router]);
+        }
+    }, [router]);
 
     useEffect(() => {
+        const getTicket = async () => {
+            try {
+                const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/payment/ticket`, {
+                    withCredentials: true,
+                })
+                setTickets(res.data.bookings);
+            } catch (error) {
+                console.log("", error);
+                setLoading(false);
+            } finally {
+                setLoading(false)
+            }
+        }
         getTicket();
 
     }, []);
 
-    const getTicket = async () => {
-        try {
-            const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/payment/ticket`, {
-                withCredentials: true,
-            })
-            setTickets(res.data.bookings);
-        } catch (error) {
-            console.log("", error);
-            setLoading(false);
-        } finally {
-            setLoading(false)
-        }
-    }
 
     if (loading) {
         return <div className="flex justify-center items-center h-[70vh]">
