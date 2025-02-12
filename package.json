@@ -1,12 +1,14 @@
 {
   "name": "bookmyshow",
   "private": true,
-  "workspaces": ["apps/*"],
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "build-backend": "cd apps/backend && turbo run build --filter=backend",
+    "build-backend": "turbo run build --filter=backend",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
