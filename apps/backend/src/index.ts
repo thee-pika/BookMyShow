@@ -18,8 +18,6 @@ app.use(cors({
 }));
 
 
-// "build-backend": "cd apps/backend && turbo run build --filter=backend",
-
 app.use("/api/v1/auth", userRouter)
 app.use("/api/v1/auth/admin", adminRouter)
 app.use("/api/v1/movie", movieRouter)
