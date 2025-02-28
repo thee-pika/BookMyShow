@@ -17,7 +17,6 @@ app.use(cors({
     credentials: true,
 }));
 
-
 app.use("/api/v1/auth", userRouter)
 app.use("/api/v1/auth/admin", adminRouter)
 app.use("/api/v1/movie", movieRouter)

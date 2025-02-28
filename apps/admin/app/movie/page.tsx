@@ -140,6 +140,7 @@ const AddMovieForm = () => {
                         onChange={(e) => setMovieData({ ...movieData!, title: e.target.value })}
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter movie title"
+                        required
                     />
                 </div>
 
@@ -152,6 +153,7 @@ const AddMovieForm = () => {
                         }
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter movie description"
+                        required
                     />
                 </div>
 
@@ -163,6 +165,7 @@ const AddMovieForm = () => {
                         onChange={handleFileChange}
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter image URL"
+                        required
                     />
                 </div>
 
@@ -174,6 +177,7 @@ const AddMovieForm = () => {
                         onChange={handleFileChange}
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter image URL"
+                        required
                     />
                 </div>
 
@@ -185,6 +189,7 @@ const AddMovieForm = () => {
                         onChange={(e) => setMovieData({ ...movieData!, totalSeats: parseInt(e.target.value) })}
                         className="w-full p-2 border border-gray-300 rounded"
                         value={movieData?.totalSeats}
+                        required
                     />
                 </div>
 
@@ -195,6 +200,7 @@ const AddMovieForm = () => {
                         onChange={(e) => setMovieData({ ...movieData!, seatPrice: parseInt(e.target.value) })}
                         className="w-full p-2 border border-gray-300 rounded"
                         value={movieData?.seatPrice}
+                        required
                     />
                 </div>
 
@@ -208,6 +214,7 @@ const AddMovieForm = () => {
                         }
                         className="w-full p-2 border border-gray-300 rounded"
                         value={movieData?.cinemahall}
+                        required
                     />
                 </div>
                 <div className="flex justify-between">
