@@ -205,10 +205,10 @@ export default function Home() {
 
         <div className="screening-today mt-12">
           <div
-            className="relative w-full h-[400px] sm:h-[600px] bg-cover bg-center bg-opacity-20"
-            style={{ backgroundImage: "url('/assets/screening.jpg')" }}
+            className="relative w-full h-[400px] sm:h-[600px]"
+            // style={{ backgroundImage: "url('/assets/screening.jpg')" }}
           >
-            <div className="absolute inset-0 bg-[#21223F] bg-opacity-50"></div>
+            <div className="absolute inset-0 bg-[#174612] bg-opacity-50"></div>
             <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between h-full p-4 sm:p-12">
               <div className="text-section text-white max-w-lg text-center sm:text-left">
                 <h1 className="text-2xl sm:text-4xl font-bold mb-4">
