@@ -30,21 +30,21 @@ interface FileType {
 }
 const AddMovieForm = () => {
     const router = useRouter();
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<string | null>(null);
+    // const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState<string | null>(null);
 
+    console.log("im in add movieeeeeeeeeeeeeeeeeeeeeee");
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-        const data = localStorage.getItem("access_token");
-        setData(data);
+        const data = sessionStorage.getItem("access_token");
         if (data) {
+
             const userDetails = JSON.parse(data);
             const token = userDetails.token;
+            setToken(token);
             if (!token) {
                 router.push("/auth/login");
             }
         }
-    }
     }, [router])
 
 
@@ -74,11 +74,11 @@ const AddMovieForm = () => {
     const languages = ["Telugu", "Hindi", "English", "Tamil", "Malayalam"]
     const genres = ["Action", "Thriller", "Horror"]
 
-    if (loading) {
-        return <div className="flex justify-center items-center h-[70vh]">
-            <PropagateLoader />
-        </div>
-    }
+    // if (loading) {
+    //     return <div className="flex justify-center items-center h-[70vh]">
+    //         <PropagateLoader />
+    //     </div>
+    // }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name } = e.target;
@@ -121,10 +121,11 @@ const AddMovieForm = () => {
             if (res.status === 200) {
                 router.push("/");
             }
-        } catch (error: unknown) {
-            setLoading(false)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            // setLoading(false)
         } finally {
-            setLoading(false)
+            // setLoading(false)
         }
     };
 
@@ -140,7 +141,6 @@ const AddMovieForm = () => {
                         onChange={(e) => setMovieData({ ...movieData!, title: e.target.value })}
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter movie title"
-                        required
                     />
                 </div>
 
@@ -153,7 +153,6 @@ const AddMovieForm = () => {
                         }
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter movie description"
-                        required
                     />
                 </div>
 
@@ -165,7 +164,6 @@ const AddMovieForm = () => {
                         onChange={handleFileChange}
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter image URL"
-                        required
                     />
                 </div>
 
@@ -177,7 +175,6 @@ const AddMovieForm = () => {
                         onChange={handleFileChange}
                         className="w-full p-2 border border-gray-300 rounded"
                         placeholder="Enter image URL"
-                        required
                     />
                 </div>
 
@@ -189,7 +186,6 @@ const AddMovieForm = () => {
                         onChange={(e) => setMovieData({ ...movieData!, totalSeats: parseInt(e.target.value) })}
                         className="w-full p-2 border border-gray-300 rounded"
                         value={movieData?.totalSeats}
-                        required
                     />
                 </div>
 
@@ -200,7 +196,6 @@ const AddMovieForm = () => {
                         onChange={(e) => setMovieData({ ...movieData!, seatPrice: parseInt(e.target.value) })}
                         className="w-full p-2 border border-gray-300 rounded"
                         value={movieData?.seatPrice}
-                        required
                     />
                 </div>
 
@@ -214,7 +209,6 @@ const AddMovieForm = () => {
                         }
                         className="w-full p-2 border border-gray-300 rounded"
                         value={movieData?.cinemahall}
-                        required
                     />
                 </div>
                 <div className="flex justify-between">

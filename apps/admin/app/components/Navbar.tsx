@@ -17,14 +17,14 @@ const Navbar = () => {
 
                 const token = userDetails.token;
                 if (!token) {
-                    console.log("im in token ")
+                    console.log("im in navbar not found token ")
                     setisLoggedIn(false);
-
+                    router.push("/auth/login");
                 } else {
                     setisLoggedIn(true);
                     setrole(userDetails.role);
-                    console.log("role,", role)
-                    router.push("/auth/login");
+                    console.log("tokerole,", role)
+                    
                 }
             }
         }
@@ -36,9 +36,10 @@ const Navbar = () => {
         router.refresh();
         setisLoggedIn(false);
         setrole("");
+        router.push("/auth/login");
         }
     }
-
+// you have to upload to github
     return (
         <>
             <div className="navbar  h-16 top-0 sticky z-50 w-[100%] bg-[#ffffff] flex justify-between items-center">

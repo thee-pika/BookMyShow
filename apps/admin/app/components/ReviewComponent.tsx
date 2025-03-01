@@ -25,33 +25,32 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
     const [editingId, setEditingId] = useState("");
     const [loading, setLoading] = useState(true);
     const [allReviews, setAllReviews] = useState<Review[]>([]);
-    const [data, setData] = useState<string | null>(null);
-
+    const [token, setToken] = useState<string | null>(null);
+ 
     const router = useRouter();
 
     useEffect(() => {
-        if (typeof window !== "undefined") {
+        const data = sessionStorage.getItem("access_token");
+        if (data) {
+            const userDetails = JSON.parse(data);
 
-            const sessionData = localStorage.getItem("access_token");
-            setData(sessionData);
-
-            if (sessionData) {
-                const userDetails = JSON.parse(sessionData);
-                const token = userDetails?.token;
-
-                if (!token) {
-                    router.push("/auth/login");
-                }
+            const token = userDetails.token;
+            setToken(token);
+            if (!token) {
+                router.push("/auth/login");
             }
         }
-    }, [router]);
 
+    }, [router])
+
+  
+    
     useEffect(() => {
         const getReviews = async () => {
             try {
                 const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/review//movies/${movieId}`);
                 setAllReviews(res.data.reviews);
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
                 setLoading(false);
             } finally {
@@ -60,7 +59,7 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
         }
 
         getReviews();
-    }, [movieId]);
+    }, []);
 
     if (loading) {
         return <div className="flex justify-center items-center h-[70vh]">
@@ -159,7 +158,7 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
                                 placeholder="write your review"
                                 value={review}
                                 onChange={(e) => setReview(e.target.value)}
-                                className="border border-gray-500 p-4 mt-4 ml-4 mr-4 rounded-md w-lg"
+                                className="border border-gray-500 p-4 mt-4 ml-4 mr-4 rounded-md w-[30vh] sm:w-lg"
                             />
                         </div>
                         <div className="flex justify-center">
@@ -174,11 +173,11 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
                 {/* RenderReviews */}
                 <div className='w-full md:w-1/2 bg-[#F6F6F6] max-h-[400px] overflow-y-auto'>
                     <h1 className='font-bold text-lg text-center mt-4'>Top Reviews</h1>
-                    <div className="reviews h-80  grid grid-cols-2 mb-4">
+                    <div className="reviews h-80  grid  grid-cols-1 smgrid-cols-2 mb-4">
                         {
                             allReviews ?
                                 allReviews.map((review) => (
-                                    <div key={review.id} className="p-4 rounded-md m-4 shadow-md w-80 flex flex-col justify-evenly">
+                                    <div key={review.id} className="p-4 mx-auto rounded-md m-4 shadow-md w-80 flex flex-col justify-evenly">
                                         <div className='flex items-center'>
                                             <div className="user-icon">
                                                 <Image src={"/assets/user-profile-circle-solid-svgrepo-com.svg"} alt={''} width={30} height={30} />

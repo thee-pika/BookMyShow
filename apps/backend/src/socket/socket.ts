@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 
 const httpServer = createServer(app);
+
 const io = new Server(httpServer, {
     cors: {
         origin: "*", // Allow requests from all origins

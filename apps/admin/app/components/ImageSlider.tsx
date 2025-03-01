@@ -9,6 +9,7 @@ const ImageSlider = () => {
     "/assets/random-banner.avif",
     "/assets/tamil.avif",
   ];
+
   return (
     <>
       <div className="image-slider bg-[#EEEFF1] p-4">
@@ -23,11 +24,12 @@ const ImageSlider = () => {
           }}
           modules={[Autoplay]}
           breakpoints={{
+            0: { slidesPerView: 1, spaceBetween: 10 },
             640: { slidesPerView: 1, spaceBetween: 20 },
             768: { slidesPerView: 1, spaceBetween: 30 },
             1024: { slidesPerView: 2.5, spaceBetween: 40 },
           }}
-          
+
           className="w-full"
         >
           {images.map((image, index) => (

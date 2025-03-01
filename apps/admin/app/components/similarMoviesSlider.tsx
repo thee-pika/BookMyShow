@@ -1,11 +1,17 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import Image from "next/image";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+
+import * as React from "react"
+import Image from "next/image"
+import { Card, CardContent } from "@/components/ui/card"
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 interface MovieData {
     id: string;
@@ -23,52 +29,56 @@ interface MovieData {
     trailerId: string;
 }
 
-const SimilarMoviesSlider = ({id}: {id: string}) => {
+const SimilarMoviesSlider = ({ id }: { id: string }) => {
+
     const [similarMovies, setSimilarMovies] = useState<MovieData[] | null>(null);
 
     useEffect(() => {
-      getSimilarMovies()
-    }, [])
-    
-    const getSimilarMovies = async () => {
-        const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}/similar`
-        );
-        if (res.statusText === "OK") {
-            const fetchedSimilarMovieData = res.data.similarMovies;
-            setSimilarMovies(fetchedSimilarMovieData);
-        }
-    };
+        const getSimilarMovies = async () => {
+            const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}/similar`
+            );
+            if (res.statusText === "OK") {
+                const fetchedSimilarMovieData = res.data.similarMovies;
+                setSimilarMovies(fetchedSimilarMovieData);
+            }
+        };
+        getSimilarMovies()
+    }, [id])
+
     return (
-        <div>
-            <Swiper
-                slidesPerView={4}
-                loop={similarMovies ? similarMovies.length > 4 : false}
-                spaceBetween={10}
-                navigation={true}
-                modules={[Navigation]}
-                className="w-full"
+        <div className="flex w-[80vw]  justify-center pl-14 sm:px-6 lg:px-8">
+      <Carousel className="w-full max-w-7xl">
+        <CarouselContent className="-ml-1">
+          {similarMovies?.map((movie: MovieData, index: number) => (
+            <CarouselItem
+              key={index}
+              className="pl-1 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
             >
-                {
-                    similarMovies?.map((movie:MovieData, index: number) => (
-                        <SwiperSlide key={index} className="slider-slide">
-                            
-                            <div className="w-[260px] h-[400px] relative overflow-hidden  rounded-lg mt-4 ">
-                                <Link href={`/movie/${movie.id}`}>
-                                    <Image
-                                        src={movie.imageUrl}
-                                        alt=""
-                                        layout="fill"
-                                        className="object-cover transition-transform duration-300 hover:scale-110"
-                                    />
-                                </Link>
-                            </div>
-                        </SwiperSlide>
-                    ))
-                }
-            </Swiper>
-        </div>
+              <div className="p-2">
+                <Card className="rounded-lg shadow-md">
+                  <CardContent className="flex aspect-square items-center justify-center p-4 sm:p-6">
+                    <div className="relative w-full h-64 sm:h-[300px] lg:h-[400px] overflow-hidden rounded-lg">
+                      <Link href={`/movie/${movie.id}`}>
+                        <Image
+                          src={movie.imageUrl}
+                          alt={movie.title}
+                          layout="fill"
+                          className="object-cover transition-transform duration-300 hover:scale-110"
+                        />
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </div>
     )
 }
 
-export default SimilarMoviesSlider;
+export default SimilarMoviesSlider

@@ -49,27 +49,14 @@ movieRouter.post("/", verifyJwt, async (req, res) => {
 })
 
 movieRouter.get("/", async (req, res) => {
-    const pageNo = req.query.page as string;
-    const limitNo = req.query.limit as string;
-    const page = parseInt(pageNo) || 1;
-
-    const totalMovies = await client.movie.count();
-    const limit = parseInt(limitNo!) || 1;
-    const totalPages = Math.ceil(totalMovies / limit);
-    const skip = (page - 1) * limit;
-
-    const movies = await client.movie.findMany({
-        skip,
-        take: limit
-    })
+    const movies = await client.movie.findMany({});
 
     if (!movies) {
         res.json({ message: "no movies found!!" })
     }
 
     res.status(200).json({
-        movies,
-        totalPages
+        movies
     })
 })
 
@@ -85,13 +72,32 @@ movieRouter.get("/upcoming", async (req, res) => {
         }
     })
 
-    console.log("upcoming,", upcomingMovies);
     if (upcomingMovies.length < 1) {
-        res.status(400).json({ message: "no upcoming movies found!!" });
+        res.status(200).json({ message: "no upcoming movies found!!",upcomingMovies});
         return;
     }
 
     res.status(200).json({ upcomingMovies });
+})
+
+movieRouter.get("/streamed", async (req, res) => {
+ 
+    const currentTime = new Date().toISOString();
+
+    const streamedMovies = await client.movie.findMany({
+        where: {
+            startTime: {
+                lt: currentTime
+            }
+        }
+    })
+
+    if (streamedMovies.length < 1) {
+        res.status(400).json({ message: "no upcoming movies found!!" });
+        return;
+    }
+
+    res.status(200).json({ streamedMovies });
 })
 
 movieRouter.get("/streaming", async (req, res) => {
@@ -109,7 +115,7 @@ movieRouter.get("/streaming", async (req, res) => {
         }
     })
 
-    console.log("upcoming,", streamingMovies);
+    console.log("streaming,", streamingMovies);
     if (streamingMovies.length < 1) {
         res.status(400).json({ message: "no upcoming movies found!!" });
         return;
@@ -152,7 +158,7 @@ movieRouter.get("/:id/seats", async (req, res) => {
     })
 })
 movieRouter.get("/:id", async (req, res) => {
-    console.log(" u cheated meee");
+ 
     const movieId = req.params.id;
 
     const movie = await client.movie.findFirst({
@@ -164,7 +170,7 @@ movieRouter.get("/:id", async (req, res) => {
 })
 
 movieRouter.get("/:id/similar", async (req, res) => {
-    console.log("im innn getting movies section ........");
+    
     const movieId = req.params.id;
 
     const movie = await client.movie.findFirst({

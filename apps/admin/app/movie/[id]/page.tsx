@@ -10,7 +10,6 @@ import SimilarMoviesSlider from "../../components/similarMoviesSlider";
 import ReviewComponent from "../../components/ReviewComponent";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
-
 dotenv.config();
 
 interface MovieData {
@@ -34,51 +33,51 @@ const GetMovieByItsId = () => {
   const { id } = useParams();
   const [role, setrole] = useState("");
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
 
   const router = useRouter();
+  const currentTime = new Date().toISOString();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const data = localStorage.getItem("access_token");
-      if (data) {
-        const userDetails = JSON.parse(data);
-  
-        if (userDetails) {
-          setrole(userDetails.role);
-        }
+    const data = sessionStorage.getItem("access_token");
+    console.log("im in get movie section")
+    if (data) {
+      const userDetails = JSON.parse(data);
+      const token = userDetails.token;
+      if (!token) {
+        router.push("/auth/login");
       } else {
-        setrole("");
+        setToken(token);
+        setrole(userDetails.role);
       }
+    } else {
+      setrole("");
     }
 
   }, [role])
 
-  
+  const getMovie = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
+      );
+      if (res.statusText === "OK") {
+        setMovie(res.data.movie);
+        console.log("res movie, ", res.data.movie);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      setLoading(false)
+    } finally {
+      setLoading(false)
+    }
+  };
 
   useEffect(() => {
     if (id) {
-
-      const getMovie = async () => {
-        try {
-          const res = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
-          );
-          if (res.statusText === "OK") {
-            setMovie(res.data.movie);
-            console.log("res movie, ", res.data.movie);
-          }
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-          setLoading(false)
-        } finally {
-          setLoading(false)
-        }
-      };
-
       getMovie();
     }
-  }, [id]);
-
+  }, []);
 
   if (loading) {
     return <div className="flex justify-center items-center h-[70vh]">
@@ -108,7 +107,7 @@ const GetMovieByItsId = () => {
 
   return (
     <>
-      <div className="movie bg-black text-white min-h-screen relative flex-col">
+      <div className="movie bg-black text-white min-h-screen relative flex flex-col">
         {movie ? (
           <>
             {/* Background Banner */}
@@ -122,80 +121,77 @@ const GetMovieByItsId = () => {
               />
             </div>
             {/* Main Content */}
-            <div className="relative z-10 flex flex-wrap items-center  gap-8 p-8">
-
-              <div className="w-full md:w-[30%] flex flex-col items-center lg:w-[25%] h-[50vh] overflow-hidden rounded-xl shadow-lg">
+            <div className="relative z-10 flex flex-wrap items-start gap-8 p-4 sm:p-8">
+              <div className="w-full hidden sm:flex sm:w-[40%] lg:w-[25%] h-[40vh] sm:h-[50vh] rounded-xl shadow-lg overflow-hidden">
                 <Image
                   src={movie.imageUrl}
                   alt={`${movie.title} Poster`}
                   width={250}
                   height={350}
                   objectFit="cover"
+                  className="w-full h-full"
                 />
               </div>
-              <div className="w-full flex flex-col mt-24 md:w-[55%] lg:w-[60%] pl-12 space-y-6">
-                <div className="flex">
-                  <h1 className="text-4xl font-bold">{movie.title}
-                  </h1>
-                </div>
+              <div className="w-full sm:w-[55%] lg:w-[60%] flex flex-col space-y-4 mt-28 ">
+                <h1 className="text-2xl sm:text-4xl font-bold">{movie.title}</h1>
                 <p className="text-blue-500 font-bold text-lg">BlockBuster</p>
-                <div className="flex font-bold">
-                  <p className="text-lg ">
-                    {movie.language}
-                  </p>
-                  <p className="text-gray-400 ml-2 mr-2">|</p>
-                  <p className="text-lg">
-                    {movie.year}
-                  </p>
-                  <p className="text-gray-400 ml-2 mr-2">|</p>
-                  <p className="text-lg">
-                    {movie.genre}
-                  </p>
-
+                <div className="flex text-sm sm:text-lg font-bold">
+                  <p>{movie.language}</p>
+                  <span className="text-gray-400 mx-2">|</span>
+                  <p>{movie.year}</p>
+                  <span className="text-gray-400 mx-2">|</span>
+                  <p>{movie.genre}</p>
                 </div>
-                <p className="text-base text-gray-300 w-[30vw]">{movie.description}</p>
-                <p className="text-lg font-bold  text-white">
-                  startsAt:
-                  {new Date(movie.startTime!).toLocaleString('en-Us', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                <p className="text-sm sm:text-base text-gray-300">{movie.description}</p>
+                <p className="text-sm sm:text-lg font-bold">
+                  StartsAt:{" "}
+                  {new Date(movie.startTime!).toLocaleString("en-Us", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </p>
                 <div>
                   <Link href={`/movie/${movie.id}/seats`}>
-                    <button className="px-20 mt-20 py-3 bg-[#F84464] hover:bg-[#cc0a0a] text-white font-semibold rounded-lg">
+                    <button
+                      className={`px-4 py-2 sm:px-8 sm:py-3 mt-6 rounded-lg font-semibold ${movie.startTime &&
+                          new Date(movie.startTime).toISOString() > currentTime
+                          ? "bg-red-600 hover:bg-red-500 text-white"
+                          : "bg-gray-500 text-gray-300"
+                        }`}
+                      disabled={
+                        !movie.startTime ||
+                        new Date(movie.startTime).toISOString() <= currentTime
+                      }
+                    >
                       Book Tickets
                     </button>
                   </Link>
                 </div>
               </div>
-
-              {
-                role === "admin" && <div className="flex pb-108">
-                  <span >
-                    <Link href={`/movie/${movie.id}/edit`}>
-                      <Image
-                        src={"/assets/edit-svgrepo-com.svg"} alt={""} width={30} height={30} className="m-2" />
-                    </Link>
-                  </span>
-                  <span onClick={handleDelete}>
+              {role === "admin" && (
+                <div className="flex mt-4">
+                  <Link href={`/movie/${movie.id}/edit`} className="mr-4">
                     <Image
-                      src={'/assets/delete-2-svgrepo-com.svg'}
-                      alt={""}
+                      src={"/assets/edit-svgrepo-com.svg"}
+                      alt={"Edit"}
                       width={30}
                       height={30}
-                      className="m-2"
+                    />
+                  </Link>
+                  <span onClick={handleDelete} className="cursor-pointer">
+                    <Image
+                      src={"/assets/delete-2-svgrepo-com.svg"}
+                      alt={"Delete"}
+                      width={30}
+                      height={30}
                     />
                   </span>
                 </div>
-              }
+              )}
             </div>
-            {/* <div>
-            <SimilarMoviesSlider images={movieImages} />
-          </div> */}
           </>
         ) : (
           <div className="flex items-center justify-center h-screen">
@@ -203,20 +199,12 @@ const GetMovieByItsId = () => {
           </div>
         )}
       </div>
-      {/* review Section */}
-
-      <div className="review">
+      {/* Review Section */}
+      <div className="review px-4 sm:px-8">
         {id && <ReviewComponent movieId={id as string} />}
       </div>
-
-      <div className="">
-        {
-          movie ? (
-            <div>
-              <SimilarMoviesSlider id={id as string} />
-            </div>
-          ) : ""
-        }
+      <div className="similar-movies mt-8">
+        {movie && <SimilarMoviesSlider id={id as string} />}
       </div>
       <Toaster />
     </>
