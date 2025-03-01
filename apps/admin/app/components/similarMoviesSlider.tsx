@@ -47,7 +47,7 @@ const SimilarMoviesSlider = ({ id }: { id: string }) => {
     }, [id])
 
     return (
-        <div className="flex w-[80vw]  justify-center pl-14 sm:px-6 lg:px-8">
+        <div className="flex w-full  justify-center pl-14 sm:px-6 lg:px-8">
       <Carousel className="w-full max-w-7xl">
         <CarouselContent className="-ml-1">
           {similarMovies?.map((movie: MovieData, index: number) => (

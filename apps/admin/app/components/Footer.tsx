@@ -146,25 +146,25 @@ const Footer = () => {
         <div className="footer w-full flex flex-col items-center mt-12">
           <div className="socio-icons flex justify-center gap-4 mb-6">
             <Image
-              src="/assets/facebook-svgrepo-com.svg"
+              src="/assets/facebook.svg"
               alt="Facebook"
-              width={30}
-              height={30}
-              className="opacity-50 hover:opacity-100 cursor-pointer"
+              width={40}
+              height={40}
+              className="opacity-50 hover:opacity-100 cursor-pointer hover:bg-white rounded-full"
             />
             <Image
               src="/assets/linkedin-round-svgrepo-com.svg"
               alt="LinkedIn"
-              width={30}
-              height={30}
-              className="opacity-50 hover:opacity-100 cursor-pointer"
+              width={40}
+              height={40}
+              className="opacity-50 hover:opacity-100 cursor-pointer hover:bg-white rounded-full "
             />
             <Image
               src="/assets/twitter-round-svgrepo-com.svg"
               alt="Twitter"
-              width={30}
-              height={30}
-              className="opacity-50 hover:opacity-100 cursor-pointer"
+              width={40}
+              height={40}
+              className="opacity-50 hover:opacity-100 cursor-pointer hover:bg-white rounded-full"
             />
           </div>
 

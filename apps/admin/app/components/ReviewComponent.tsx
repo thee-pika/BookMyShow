@@ -158,7 +158,7 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
                                 placeholder="write your review"
                                 value={review}
                                 onChange={(e) => setReview(e.target.value)}
-                                className="border border-gray-500 p-4 mt-4 ml-4 mr-4 rounded-md w-[30vh] sm:w-lg"
+                                className="border border-gray-500 p-4 mt-4 ml-4 mr-4 rounded-md w-[30vw] sm:w-lg"
                             />
                         </div>
                         <div className="flex justify-center">
@@ -173,7 +173,7 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
                 {/* RenderReviews */}
                 <div className='w-full md:w-1/2 bg-[#F6F6F6] max-h-[400px] overflow-y-auto'>
                     <h1 className='font-bold text-lg text-center mt-4'>Top Reviews</h1>
-                    <div className="reviews h-80  grid  grid-cols-1 smgrid-cols-2 mb-4">
+                    <div className="reviews h-80  grid  grid-cols-1 sm:grid-cols-2 mb-4">
                         {
                             allReviews ?
                                 allReviews.map((review) => (

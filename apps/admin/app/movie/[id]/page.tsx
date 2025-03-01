@@ -121,8 +121,8 @@ const GetMovieByItsId = () => {
               />
             </div>
             {/* Main Content */}
-            <div className="relative z-10 flex flex-wrap items-start gap-8 p-4 sm:p-8">
-              <div className="w-full hidden sm:flex sm:w-[40%] lg:w-[25%] h-[40vh] sm:h-[50vh] rounded-xl shadow-lg overflow-hidden">
+            <div className="relative z-10 flex flex-wrap items-center gap-8 p-4 sm:p-8">
+              <div className="w-full hidden sm:flex sm:w-[40%] lg:w-[22%] h-[40vh] sm:h-[60vh] rounded-xl shadow-lg overflow-hidden">
                 <Image
                   src={movie.imageUrl}
                   alt={`${movie.title} Poster`}

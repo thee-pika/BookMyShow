@@ -30,7 +30,7 @@ interface FileType {
 }
 const AddMovieForm = () => {
     const router = useRouter();
-    // const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [token, setToken] = useState<string | null>(null);
 
     console.log("im in add movieeeeeeeeeeeeeeeeeeeeeee");
@@ -46,7 +46,6 @@ const AddMovieForm = () => {
             }
         }
     }, [router])
-
 
     const [selectedOption, setSelectedOption] = useState({
         language: "",
@@ -74,11 +73,11 @@ const AddMovieForm = () => {
     const languages = ["Telugu", "Hindi", "English", "Tamil", "Malayalam"]
     const genres = ["Action", "Thriller", "Horror"]
 
-    // if (loading) {
-    //     return <div className="flex justify-center items-center h-[70vh]">
-    //         <PropagateLoader />
-    //     </div>
-    // }
+    if (loading) {
+        return <div className="flex justify-center items-center h-[70vh]">
+            <PropagateLoader />
+        </div>
+    }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name } = e.target;
@@ -94,6 +93,7 @@ const AddMovieForm = () => {
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        setLoading(true);
         e.preventDefault();
 
         try {
@@ -123,9 +123,9 @@ const AddMovieForm = () => {
             }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
-            // setLoading(false)
+            setLoading(false)
         } finally {
-            // setLoading(false)
+            setLoading(false)
         }
     };
 
