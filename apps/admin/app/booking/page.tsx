@@ -65,12 +65,13 @@ const Ticket = () => {
 
     return (
         <>
-            <h1 className="text-lg font-bold m-4 mx-auto">Your Tickets</h1>
+            <h1 className="text-lg font-bold m-4 mx-auto ">Your Tickets</h1>
             <div>
                 {
-                    tickets?.map((ticket) => (
+                    tickets && tickets.length > 0 ?
+                    tickets.map((ticket) => (
                         <div className="ticket shadow-lg w-80 rounded-md ml-8" key={ticket.id}>
-                            <h1 className="">Ticket</h1>
+                            <h1 className="">Tickettt</h1>
                             <div className="head flex justify-between">
                                 <div className="head1 p-2 ">
                                     <Image
@@ -93,7 +94,9 @@ const Ticket = () => {
                                 <h1>Total Amount: {(ticket.totalPrice) / 100} </h1>
                             </div>
                         </div>
-                    ))
+                    )) : <div className="min-h-72 flex justify-center items-center">
+                        <p className="text-5xl font-bold"> No Tickets Found </p>
+                    </div>
                 }
             </div>
         </>

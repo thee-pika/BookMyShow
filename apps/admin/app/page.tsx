@@ -72,7 +72,7 @@ export default function Home() {
   const getMovies = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie?page=1&limit=8`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie`
       );
       setMovies(res.data.movies);
     } catch (error) {
@@ -208,7 +208,7 @@ export default function Home() {
             className="relative w-full h-[400px] sm:h-[600px]"
             // style={{ backgroundImage: "url('/assets/screening.jpg')" }}
           >
-            <div className="absolute inset-0 bg-[#174612] bg-opacity-50"></div>
+            <div className="absolute inset-0 bg-black"></div>
             <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between h-full p-4 sm:p-12">
               <div className="text-section text-white max-w-lg text-center sm:text-left">
                 <h1 className="text-2xl sm:text-4xl font-bold mb-4">
