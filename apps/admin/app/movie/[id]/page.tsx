@@ -54,30 +54,30 @@ const GetMovieByItsId = () => {
       setrole("");
     }
 
-  }, [role])
-
-  const getMovie = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
-      );
-      if (res.statusText === "OK") {
-        console.log("res movie, ", res.data);
-        setMovie(res.data.movie);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      setLoading(false)
-    } finally {
-      setLoading(false)
-    }
-  };
+  }, [role, router])
 
   useEffect(() => {
     if (id) {
+      const getMovie = async () => {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
+          );
+          if (res.statusText === "OK") {
+            console.log("res movie, ", res.data);
+            setMovie(res.data.movie);
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          setLoading(false)
+        } finally {
+          setLoading(false)
+        }
+      };
+
       getMovie();
     }
-  }, []);
+  }, [id]);
 
   if (loading) {
     return <div className="flex justify-center items-center h-[70vh]">
