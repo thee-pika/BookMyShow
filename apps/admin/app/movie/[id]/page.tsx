@@ -62,8 +62,8 @@ const GetMovieByItsId = () => {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
       );
       if (res.statusText === "OK") {
-        setMovie(res.data.movie);
         console.log("res movie, ", res.data.movie);
+        setMovie(res.data.movie);
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

@@ -73,21 +73,21 @@ const Navbar = () => {
           </Link>
           {role === "admin" && (
             <Link href={"/movie"}>
-              <div className="px-4 py-2 hover:bg-gray-200 rounded-md">
+              <div className="px-4 py-2 hover:bg-gray-200">
                 New Movie
               </div>
             </Link>
           )}
           <Link href={"/about"}>
-            <div className="px-4 py-2 hover:bg-gray-200 rounded-md">About</div>
+            <div className="px-4 py-2 hover:bg-gray-200 ">About</div>
           </Link>
           {!isLoggedIn ? (
             <Link href={"/auth/login"}>
-              <div className="px-4 py-2 hover:bg-gray-200 rounded-md">Login</div>
+              <div className="px-4 py-2 hover:bg-gray-200 ">Login</div>
             </Link>
           ) : (
             <div
-              className="px-4 py-2 hover:bg-gray-200 rounded-md cursor-pointer"
+              className="px-4 py-2 hover:bg-gray-200  cursor-pointer"
               onClick={handleLogout}
             >
               Logout
