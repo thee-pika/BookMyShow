@@ -45,7 +45,6 @@ const UpcomingMovies = () => {
             setLoading(false);
         }
     }
-
     
     if (loading) {
         return <div className="flex justify-center items-center h-[70vh]">
@@ -56,6 +55,7 @@ const UpcomingMovies = () => {
     return (
         <div>
             <div className=" bg-white rounded-xl shadow-md">
+            
                 <h1 className="text-xl font-bold text-center"> Upcoming Moviess </h1>
                 <div className="flex flex-wrap justify-center">
                     {UpcomingMovies ? (

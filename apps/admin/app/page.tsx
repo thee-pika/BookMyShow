@@ -150,6 +150,7 @@ export default function Home() {
           </div>
           <div className="w-full sm:w-[65%] mt-8 bg-white rounded-xl shadow-sm">
             <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center p-6">
+            
               {filteredMovies ? (
                 filteredMovies.map((movie: Movie) => (
                   <div

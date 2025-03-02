@@ -150,21 +150,21 @@ const Footer = () => {
               alt="Facebook"
               width={40}
               height={40}
-              className="opacity-50 hover:opacity-100 cursor-pointer hover:bg-white rounded-full"
+              className="opacity-50 hover:opacity-100 cursor-pointer bg-white sm:hover:bg-white rounded-full"
             />
             <Image
               src="/assets/linkedin-round-svgrepo-com.svg"
               alt="LinkedIn"
               width={40}
               height={40}
-              className="opacity-50 hover:opacity-100 cursor-pointer hover:bg-white rounded-full "
+              className="opacity-50 hover:opacity-100 cursor-pointer bg-white sm:hover:bg-white rounded-full "
             />
             <Image
               src="/assets/twitter-round-svgrepo-com.svg"
               alt="Twitter"
               width={40}
               height={40}
-              className="opacity-50 hover:opacity-100 cursor-pointer hover:bg-white rounded-full"
+              className="opacity-50 hover:opacity-100 cursor-pointer bg-white sm:hover:bg-white rounded-full"
             />
           </div>
 

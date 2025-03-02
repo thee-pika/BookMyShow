@@ -52,7 +52,6 @@ const UpcomingMovies = () => {
                 const res = await axios.get(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/streamed`
                 );
-        console.log("streameddddddddddddddddddddddd,", res);
                 if (res.status === 200) {
                     setStreamingMovies(res.data.streamedMovies);
                 }
@@ -109,8 +108,7 @@ const UpcomingMovies = () => {
                         <CarouselPrevious />
                         <CarouselNext />
                     </Carousel>
-                </div>
-              
+                </div>             
             </div>
 
             <div className="w-[83vw] mx-auto  rounded-xl">
@@ -148,8 +146,7 @@ const UpcomingMovies = () => {
                         <CarouselPrevious />
                         <CarouselNext />
                     </Carousel>
-                </div>
-           
+                </div>             
             </div>
         </>
     )
