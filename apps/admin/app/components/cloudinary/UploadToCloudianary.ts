@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 
 const UploadToCloudianary = async (file:File) => {
     const data = new FormData();
@@ -12,7 +13,7 @@ const UploadToCloudianary = async (file:File) => {
 
         
         if (!response.ok) {
-            console.log("could not able to uplaod");
+          toast.error("Failed to upload image");
         }
 
         const image = await response.json();

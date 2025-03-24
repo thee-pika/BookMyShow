@@ -38,7 +38,7 @@ const GetMovieByItsId = () => {
 
   useEffect(() => {
     const data = sessionStorage.getItem("access_token");
-    console.log("im in get movie section")
+  
     if (data) {
       const userDetails = JSON.parse(data);
       const token = userDetails.token;
@@ -61,12 +61,11 @@ const GetMovieByItsId = () => {
           const res = await axios.get(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
           );
-          console.log("Fetched movie data: ", res.data.movie);
           if (res.status === 200) {
             setMovie(res.data.movie);
           }
         } catch (error) {
-          console.error("Error fetching movie: ", error);
+         toast.error(`Error: ${error}`);
           setLoading(false);
         } finally {
           setLoading(false);

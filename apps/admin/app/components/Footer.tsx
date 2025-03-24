@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import toast, { Toaster } from "react-hot-toast";
 
 interface MovieData {
     id: string;
@@ -40,7 +41,7 @@ const Footer = () => {
             );
 
             if (res.status === 200) {
-              console.log("res.data.movies", res.data.movies);
+              
                 setallMovies(res.data.movies);
             }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -78,7 +79,7 @@ const Footer = () => {
                 setUpcomingMovies(res.data.upcomingMovies);
             }
         } catch (error) {
-            console.log(error);
+            toast.error(`Error: ${error}`);
             setLoading(false);
         } finally {
             setLoading(false);
@@ -178,6 +179,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      <Toaster />
     </section>
         </>
     )

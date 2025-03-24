@@ -6,11 +6,11 @@ import { verifyJwt } from "../../controlleres/userController.js";
 export const reviewRouter: Router = Router();
 
 reviewRouter.post("/", verifyJwt, async (req, res) => {
-    console.log("im here");
+
     const parsedData = addReviewSchema.safeParse(req.body);
 
     if (!parsedData.success) {
-        console.log("validation,", JSON.stringify(parsedData.error))
+       
         res.status(400).json({ message: "validation failed...." })
         return
     }
