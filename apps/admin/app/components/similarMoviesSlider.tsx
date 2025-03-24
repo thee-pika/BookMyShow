@@ -1,17 +1,17 @@
-
-import * as React from "react"
-import Image from "next/image"
-import { Card, CardContent } from "@/components/ui/card"
+import * as React from "react";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel"
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import axios from "axios"
+} from "@/components/ui/carousel";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 interface MovieData {
   id: string;
@@ -32,25 +32,47 @@ interface MovieData {
 const SimilarMoviesSlider = ({ id }: { id: string }) => {
 
   const [similarMovies, setSimilarMovies] = useState<MovieData[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getSimilarMovies = async () => {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}/similar`
-      );
-      if (res.statusText === "OK") {
-        const fetchedSimilarMovieData = res.data.similarMovies;
-        setSimilarMovies(fetchedSimilarMovieData);
+
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}/similar`
+        );
+
+        if (res.status === 200) {
+          const fetchedSimilarMovieData = res.data.similarMovies;
+          console.log("fetchedSimilarMovieData inside ", fetchedSimilarMovieData);
+          setSimilarMovies(fetchedSimilarMovieData);
+        }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        setLoading(false);
+      } finally {
+        setLoading(false);
       }
     };
-    getSimilarMovies()
-  }, [id])
+
+    getSimilarMovies();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[70vh]">
+        <PropagateLoader />
+      </div>
+    );
+  }
 
   return (
     <>
-     
-      <h1 className="text-xl font-semibold text-center mb-4 hover:underline cursor-pointer">Similar Movies</h1>
-      <div className="flex w-[80vw] sm:w-full  justify-center pl-12 sm:px-6 lg:px-8">
+      <h1 className="text-xl font-semibold text-center mb-4 hover:underline cursor-pointer">
+        Similar Movies
+      </h1>
+      <div className="flex w-[87vw] sm:w-full  justify-center pl-12 sm:px-6 lg:px-8">
         <Carousel className="w-full max-w-7xl">
           <CarouselContent className="-ml-1">
             {similarMovies?.map((movie: MovieData, index: number) => (
@@ -82,7 +104,7 @@ const SimilarMoviesSlider = ({ id }: { id: string }) => {
         </Carousel>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SimilarMoviesSlider
+export default SimilarMoviesSlider;
