@@ -163,6 +163,7 @@ export default function Home() {
                           src={movie.imageUrl}
                           alt=""
                           layout="fill"
+                           sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover transition-transform duration-300 hover:scale-110"
                         />
                       </Link>

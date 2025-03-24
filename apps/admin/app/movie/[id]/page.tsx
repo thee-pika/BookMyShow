@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import SimilarMoviesSlider from "../../components/similarMoviesSlider";
 import ReviewComponent from "../../components/ReviewComponent";
 import PropagateLoader from "react-spinners/PropagateLoader";
-
 dotenv.config();
 
 interface MovieData {
@@ -34,7 +33,6 @@ const GetMovieByItsId = () => {
   const [role, setrole] = useState("");
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
-
   const router = useRouter();
   const currentTime = new Date().toISOString();
 
@@ -54,7 +52,7 @@ const GetMovieByItsId = () => {
       setrole("");
     }
 
-  }, [role, router])
+  }, [router]);
 
   useEffect(() => {
     if (id) {
@@ -63,18 +61,18 @@ const GetMovieByItsId = () => {
           const res = await axios.get(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`
           );
-          if (res.statusText === "OK") {
-            console.log("res movie, ", res.data);
+          console.log("Fetched movie data: ", res.data.movie);
+          if (res.status === 200) {
             setMovie(res.data.movie);
           }
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
-          setLoading(false)
+          console.error("Error fetching movie: ", error);
+          setLoading(false);
         } finally {
-          setLoading(false)
+          setLoading(false);
         }
       };
-
+  
       getMovie();
     }
   }, [id]);
