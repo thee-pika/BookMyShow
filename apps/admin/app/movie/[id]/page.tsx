@@ -84,14 +84,14 @@ const GetMovieByItsId = () => {
 
   const handleDelete = async () => {
     const permision = window.confirm("Are you sure! You want to delete??");
-    console.log("permission", permision);
+    
     if (permision) {
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}`, {
         withCredentials: true
       }
       )
-      console.log("res", res);
+     
       if (res.status === 200) {
 
         toast.success("Movie deleted successfully");
@@ -118,7 +118,7 @@ const GetMovieByItsId = () => {
               />
             </div>
             {/* Main Content */}
-            <div className="relative z-10 flex flex-wrap items-center gap-8 p-4 sm:p-8">
+            <div className="relative z-10 flex flex-wrap items-center gap-8 p-4 sm:p-8 mt-24">
               <div className="w-full hidden sm:flex sm:w-[40%] lg:w-[22%] h-[40vh] sm:h-[60vh] rounded-xl shadow-lg overflow-hidden">
                 <Image
                   src={movie.imageUrl}
