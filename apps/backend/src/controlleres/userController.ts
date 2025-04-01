@@ -83,7 +83,7 @@ export const verifyJwt = async (req: Request, res: Response, next: NextFunction)
         if (error.name === "TokenExpiredError") {
             
             const decoded = jwt.decode(token) as { id: string };
-            console.log("decodd", decoded);
+           
 
             const user = await client.user.findFirst({
                 where: {
@@ -92,7 +92,7 @@ export const verifyJwt = async (req: Request, res: Response, next: NextFunction)
             })
 
             const refreshToken = user?.token;
-            console.log("rfreshtoken from backend", refreshToken);
+       
             const { access_token, refresh_token } = await getRefreshedAccessToken(refreshToken!);
 
             const cookieOptions = {

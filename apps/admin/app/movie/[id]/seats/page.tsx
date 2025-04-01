@@ -40,7 +40,7 @@ const ChooseSeats = () => {
             socket.on("booking_update", (data) => {
 
                 if (data) {
-                    console.log("data", data);
+                  
                     setorderDetails({
                         ...orderDetails,
                         orderId: data.orderId,
@@ -62,7 +62,7 @@ const ChooseSeats = () => {
             setTotalSeats(res.data.movie.totalSeats);
     
             const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/movie/${id}/seats`);
-            console.log("res seats", response.data);
+          
             setBookedSeats(response.data.seats);
             setpendingSeats(response.data.pendingSeats);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -85,7 +85,7 @@ const ChooseSeats = () => {
       }
 
     const createOrder = async (amount: number) => {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/payment/book`, {
+       await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/payment/book`, {
             amount,
             queueName: id,
             seats: selectedSeats
@@ -94,9 +94,6 @@ const ChooseSeats = () => {
             withCredentials: true,
         })
 
-        if (res.statusText === "OK") {
-            console.log("im innnn", res);
-        }
     }
 
     const toggleSeatSelection = (seatNumber: number) => {
@@ -119,7 +116,7 @@ const ChooseSeats = () => {
             } 
 
         } catch (error) {
-            console.log("erro", error);
+          
         }
     }
 

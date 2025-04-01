@@ -75,7 +75,7 @@ const EditMovie = () => {
                
             }
         } catch (error) {
-            console.log("error", error);
+           
             setLoading(false);
         } 
     }
@@ -366,7 +366,7 @@ const EditMovie = () => {
                         <DateTimePicker
                             value={movieData!.startTime}
                             onChange={(date) => {
-                                console.log("data", date);
+                             
                                 setMovieData({ ...movieData!, startTime: date })
                             }} />
                     </div>

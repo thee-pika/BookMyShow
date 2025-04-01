@@ -20,7 +20,7 @@ const Navbar = () => {
 
         const token = userDetails.token;
         if (!token) {
-          console.log("Token not found");
+          
           setisLoggedIn(false);
           router.push("/auth/login");
         } else {

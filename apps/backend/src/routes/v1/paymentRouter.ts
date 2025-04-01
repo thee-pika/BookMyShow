@@ -65,7 +65,7 @@ paymentRouter.post("/book", verifyJwt, async (req, res) => {
         res.status(200).json({ message: "order id created successfully" });
 
     } catch (error) {
-        console.log("error", error);
+       
         res.status(500).send("Error sending payment link.");
     }
 });
@@ -154,7 +154,6 @@ paymentRouter.post("/verification", async (req, res) => {
                     }
                 })
 
-                console.log("booking,", booking);
             }
         }
 

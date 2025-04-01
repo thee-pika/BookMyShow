@@ -33,7 +33,6 @@ const AddMovieForm = () => {
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useState<string | null>(null);
 
-    console.log("im in add movieeeeeeeeeeeeeeeeeeeeeee");
     useEffect(() => {
         const data = sessionStorage.getItem("access_token");
         if (data) {
@@ -283,7 +282,7 @@ const AddMovieForm = () => {
                     <DateTimePicker
                         value={movieData!.startTime}
                         onChange={(date) => {
-                            console.log("data", date);
+                           
                             setMovieData({ ...movieData!, startTime: date })
                         }} />
                 </div>

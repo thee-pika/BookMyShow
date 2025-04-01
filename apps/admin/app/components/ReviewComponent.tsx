@@ -80,7 +80,6 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
                 withCredentials: true
             });
 
-            console.log("reviews", res.data);
             if (res.status === 200) {
                 setAllReviews([...allReviews, res.data.newReview])
                 toast.success("Review Added successfully!");
@@ -130,7 +129,7 @@ const ReviewComponent = ({ movieId }: { movieId: string }) => {
 
         const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/review/${reviewId}`);
         const review = res.data.review;
-        console.log("review,", review);
+       
         setReview(review.review);
         setRating(review.rating);
     }

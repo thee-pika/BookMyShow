@@ -23,12 +23,12 @@ const loadScript = (src: string) => new Promise((resolve) => {
     script.src = src;
 
     script.onload = () => {
-        console.log('razorpay loaded successfully');
+       
         resolve(true);
     };
 
     script.onerror = () => {
-        console.log('error in loading razorpay');
+       
         resolve(false);
     };
 

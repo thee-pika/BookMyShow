@@ -17,7 +17,7 @@ movieRouter.post("/", verifyJwt, async (req, res) => {
         const parsedData = await createMovieSchema.safeParse(req.body);
 
         if (!parsedData.success) {
-            console.log(JSON.stringify(parsedData.error))
+           
             res.status(400).json({ message: "validation Failed!!" });
             return
         }
@@ -43,7 +43,7 @@ movieRouter.post("/", verifyJwt, async (req, res) => {
         res.status(200).json({ movieId: newMovie });
 
     } catch (error) {
-        console.log("err", error)
+     
         res.status(500).json({ message: "Failed to upload image", error });
     }
 })
@@ -103,9 +103,9 @@ movieRouter.get("/streamed", async (req, res) => {
 movieRouter.get("/streaming", async (req, res) => {
  
     const lowerBound = new Date().toISOString();
-    console.log("lowerBound time", lowerBound);
+    
     const upperBound = new Date(Date.now() + 7*24*60*60*1000).toISOString();
-    console.log("upperBound time", upperBound);
+    
     const streamingMovies = await client.movie.findMany({
         where: {
             startTime: {
@@ -115,7 +115,6 @@ movieRouter.get("/streaming", async (req, res) => {
         }
     })
 
-    console.log("streaming,", streamingMovies);
     if (streamingMovies.length < 1) {
         res.status(400).json({ message: "no upcoming movies found!!" });
         return;
@@ -178,7 +177,7 @@ movieRouter.get("/:id/similar", async (req, res) => {
     })
 
     if (!movie) {
-        console.log("are we here...");
+     
         res.status(400).json({ message: "no movies found!!" });
         return;
     }
@@ -203,7 +202,7 @@ movieRouter.put("/:id", verifyJwt, adminMiddleWare, async (req, res) => {
     const parsedData = updateMovieSchema.safeParse(req.body.movieData);
 
     if (!parsedData.success) {
-        console.log("error", parsedData.error)
+      
         res.status(400).json({ message: "validation Failed!!" });
         return
     }

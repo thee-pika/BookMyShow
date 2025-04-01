@@ -3,7 +3,7 @@ import { redisClient } from '../redis/worker.js';
 import  client  from '@repo/db/client';
 
 cron.schedule('*/10 * * * *', async () => {
-    console.log('Running cron job to check for expired payments...')
+    
     try {
         const keys = await redisClient.keys('session:*');
   
@@ -26,7 +26,7 @@ cron.schedule('*/10 * * * *', async () => {
                 }
                 const sessionExpiryTime = new Date(sessionData.expiresAt).getTime();
                 if (sessionExpiryTime < Date.now()) {
-                    console.log(`Session expired for orderId: ${orderId}`)
+                   
                     const updatedSeats = await client.seat.updateMany({
                         where: {
                             orderId,
@@ -36,12 +36,12 @@ cron.schedule('*/10 * * * *', async () => {
                             status: "available"
                         }
                     })
-                    console.log("updated setsa", updatedSeats);
+                 
                     await redisClient.del(key)
                 }
             }
         }
     } catch (error) {
-        console.log("error", error);
+     
     }
 })

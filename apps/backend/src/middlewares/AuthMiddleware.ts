@@ -9,7 +9,7 @@ export const AuthMiddleWare = async (req: Request, res: Response, next: NextFunc
         const token = req.headers["authorization"]?.split(" ")[1] || req.cookies?.access_token;
 
         if (!token) {
-            console.log("im innn");
+          
             res.status(403).json({ message: "No Token Found!!" });
             return
         }

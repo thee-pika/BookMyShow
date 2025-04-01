@@ -6,11 +6,11 @@ import  client  from "@repo/db/client";
 const userSockets = new Map();
 
 io.on('connection', (socket) => {
-  console.log(`user is connected to ${socket.id}`);
+
 
   socket.on("register", (movieId: string) => {
     userSockets.set(movieId, socket.id);
-    console.log(`user is connected to ${movieId}, to the socket ${socket.id}`);
+    
   })
   socket.on("disconnect", () => {
     userSockets.forEach((movieId, id) => {

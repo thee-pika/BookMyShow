@@ -40,7 +40,7 @@ adminRouter.post("/signup", async (req, res) => {
                 role: parsedData.data.role
             }
         })
-        console.log("user id", user.id);
+     
         res.status(200).json({ userId: user.id });
     } catch (error) {
         res.status(500).json({ message: "Internal server error" })
@@ -48,7 +48,7 @@ adminRouter.post("/signup", async (req, res) => {
 })
 
 adminRouter.post("/signin", async (req, res) => {
-    console.log("im inn admin enpoint");
+    
     const parsedData = signinSchema.safeParse(req.body);
 
     if (!parsedData.success) {
